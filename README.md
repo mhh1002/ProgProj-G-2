@@ -4,3 +4,4 @@ Members:
 1. Ho Hon Ma
 2. Saanvi Boggaram
 3. Yan Wa Lee
+4. Yu Xue Chen
