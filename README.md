@@ -6,3 +6,4 @@ Members:
 3. Yan Wa Lee
 4. Yu Xue Chen
 5. Yao Han
+6. Dana barri
