@@ -1,0 +1,42 @@
+// Define the Datapoint class
+class Datapoint {
+  String[] data; // Array to store the data from one line
+
+  // Constructor to initialize the datapoint with a line of data
+  Datapoint(String line) {
+    // Split the line into an array of strings (assuming comma-separated values)
+    this.data = split(line, ',');
+  }
+
+  // Method to display the datapoint (optional)
+  void display() {
+    println("Datapoint: " + join(data, ", "));
+  }
+}
+
+// ArrayList to store all datapoints
+ArrayList<Datapoint> datapoints;
+
+void setup() {
+  // Load the file
+  String[] lines = loadStrings("flights_full.csv"); // Replace with your file path
+
+  // Initialize the list of datapoints
+  datapoints = new ArrayList<Datapoint>();
+
+  // Create a Datapoint instance for each line
+  for (String line : lines) {
+    Datapoint dp = new Datapoint(line);
+    datapoints.add(dp);
+  }
+
+  // Display all datapoints (optional)
+  for (Datapoint dp : datapoints) {
+    dp.display();
+  }
+}
+
+void draw() {
+  // The draw() function is not used in this example
+  // It is required in Processing but can be left empty
+}
