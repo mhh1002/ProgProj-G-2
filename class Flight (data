@@ -1,3 +1,4 @@
+ArrayList<Flight> flights = new ArrayList<>(); 
 void readData() {
     String[] data = loadStrings("flights_full.csv");
     for (int i = 1; i < data.length; i++) {  //skip  title
