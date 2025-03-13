@@ -1,3 +1,27 @@
+void readData() {
+    String[] data = loadStrings("flights_full.csv");
+    for (int i = 1; i < data.length; i++) {  //skip  title
+        String[] parts = split(data[i], ",");
+        if (parts.length >= 17) {  
+            String flightDate = parts[0];  
+            String carrier = parts[1];  
+            String flightNumber = parts[2];  
+            String origin = parts[3];  
+            String originCity = parts[4];  
+            String dest = parts[6];  
+            String destCity = parts[7];  
+            int crsDepTime = int(parts[9]);  
+            int depTime = (parts[10].equals("")) ? -1 : int(parts[10]);  
+            boolean cancelled = int(parts[13]) == 1;  
+            int distance = int(parts[15]);  
+
+            
+            flights.add(new Flight(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance));
+        }
+    }
+    println（）；
+}
+
 class Flight {
     String flightDate;
     String carrier;
