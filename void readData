@@ -1,3 +1,5 @@
+import java.util.*;
+ArrayList<Flight> flights = new ArrayList<>(); 
 void readData() {
     String[] data = loadStrings("flights_full.csv");
     for (int i = 1; i < data.length; i++) {  //skip  title
@@ -19,5 +21,44 @@ void readData() {
             flights.add(new Flight(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance));
         }
     }
-    println（）；
 } 
+class Flight {
+    String flightDate;
+    String carrier;
+    String flightNumber;
+    String origin;
+    String originCity;
+    String dest;
+    String destCity;
+    int crsDepTime;
+    int depTime;
+    boolean cancelled;
+    int distance;
+
+    Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+        this.flightDate = flightDate;
+        this.carrier = carrier;
+        this.flightNumber = flightNumber;
+        this.origin = origin;
+        this.originCity = originCity;
+        this.dest = dest;
+        this.destCity = destCity;
+        this.crsDepTime = crsDepTime;
+        this.depTime = depTime;
+        this.cancelled = cancelled;
+        this.distance = distance;
+    }
+    public String toString() {
+        return flightDate + " | " + carrier + flightNumber + " | " + origin + " → " + dest +
+               " | Dep: " + (depTime == -1 ? "N/A" : depTime) +
+               " | Distance: " + distance + " miles" +
+               " | " + (cancelled ? "CANCELLED" : "On Time");
+    }
+}
+
+
+void printFlights() {
+    for (Flight f : flights) {  
+        println(f.toString());  
+    }
+}
