@@ -1,0 +1,27 @@
+class Flight {
+    String flightDate;
+    String carrier;
+    String flightNumber;
+    String origin;
+    String originCity;
+    String dest;
+    String destCity;
+    int crsDepTime;
+    int depTime;
+    boolean cancelled;
+    int distance;
+
+    Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+        this.flightDate = flightDate;
+        this.carrier = carrier;
+        this.flightNumber = flightNumber;
+        this.origin = origin;
+        this.originCity = originCity;
+        this.dest = dest;
+        this.destCity = destCity;
+        this.crsDepTime = crsDepTime;
+        this.depTime = depTime;
+        this.cancelled = cancelled;
+        this.distance = distance;
+    }
+}
