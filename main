@@ -8,6 +8,7 @@ final int EVENT_NULL=0;
 final int GAP=10;
 color event_Color;
 ArrayList myStrings;
+ArrayList<Datapoint> datapoints;
 
 void setup() {
 
@@ -31,22 +32,7 @@ void setup() {
 
   readData(); // read file
 
- // Load the file
-  String[] lines = loadStrings("flights_full.csv"); // Replace with your file path
-
-  // Initialize the list of datapoints
-  datapoints = new ArrayList<Datapoint>();
-
-  // Create a Datapoint instance for each line
-  for (String line : lines) {
-    Datapoint dp = new Datapoint(line);
-    datapoints.add(dp);
-  }
-
-  // Display all datapoints (optional)
-  for (Datapoint dp : datapoints) {
-    dp.display();
-  }
+ 
 }
 
 void draw () {
@@ -82,8 +68,21 @@ void mouseMoved() {
 
 void readData () {
 
-  String[] data = loadStrings("flights_full.csv");
-  for (int i = 0; i < data.length; i++) {
-    System.out.println (data[i]);
+  String[] lines = loadStrings("flights_full.csv"); // Replace with your file path
+
+  // Initialize the list of datapoints
+   datapoints = new ArrayList<Datapoint>();
+
+  // Create a Datapoint instance for each line
+  for (String line : lines) {
+    Datapoint dp = new Datapoint(line);
+    datapoints.add(dp);
   }
+
+  // Display all datapoints (optional)
+  for (Datapoint dp : datapoints) {
+    dp.display();
+  }
+  
+  
 }
