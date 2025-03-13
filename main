@@ -1,20 +1,67 @@
 import java.util.*; 
+PFont stdFont;
+ArrayList widgetList;
+Screen screen1, screen2, currentScreen;
+final int EVENT_BUTTON1=1;
+final int EVENT_BUTTON2 = 2;
+final int EVENT_NULL=0;
+final int GAP=10;
+color event_Color; 
+ArrayList myStrings;
 
 void setup() {
   
-  size (1000,800);
-  background (255); 
-  
+Widget widget1, widget2;
+size (1000,800);
+screen1 = new Screen(color(255));
+screen2 = new Screen(color(255));
+
+stdFont=loadFont("AgencyFB-Bold-20.vlw"); textFont(stdFont);
+widget1=new Widget(50, 50, 180, 40,
+"Print data", color(200, 0, 0), stdFont, EVENT_BUTTON1);
+          screen1.addWidget(widget1);
+
+widget2=new Widget(900, 50, 100, 40,
+    "Back", color(0, 200, 0), stdFont, EVENT_BUTTON2);
+         screen2.addWidget(widget2);
+
+     currentScreen = screen1;
+
+      
   readData(); // read file
 
 }
 
 void draw () {
-  
-  
+    currentScreen.draw();
   
 } 
 
+void mousePressed(){
+int event = currentScreen.getEvent(mouseX, mouseY);
+switch(event) {
+case EVENT_BUTTON1:
+println("print data");
+currentScreen = screen2;
+break;
+case EVENT_BUTTON2:
+println("backward pressed");
+currentScreen = screen1; 
+break;
+}
+}
+
+
+void mouseMoved() {
+ for (Widget aWidget : currentScreen.widgets) {
+    int event = aWidget.getEvent(mouseX, mouseY);
+    if (event != EVENT_NULL) {
+      aWidget.mouseOver();
+    } else {
+      aWidget.mouseNotOver();
+    }
+  }
+}
 
 void readData () {
   
