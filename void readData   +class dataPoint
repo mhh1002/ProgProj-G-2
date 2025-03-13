@@ -16,6 +16,74 @@ void readData() {
             int depTime = (parts[10].equals("")) ? -1 : int(parts[10]);  
             boolean cancelled = int(parts[13]) == 1;  
             int distance = int(parts[15]);  
+void readData() {
+    String[] lines = loadStrings("flights_full.csv");  
+    Datapoint dp = new ArrayList<dataPoint>();  // initialize ArrayList
+
+    for (int i = 1; i < lines.length; i++) {  
+        String[] parts = split(lines[i], ",");
+        if (parts.length >= 17) {  // skip title
+            String flightDate = parts[0];  
+            String carrier = parts[1];  
+            String flightNumber = parts[2];  
+            String origin = parts[3];  
+            String originCity = parts[4];  
+            String dest = parts[6];  
+            String destCity = parts[7];  
+            int crsDepTime = int(parts[9]);  
+            int depTime = (parts[10].equals("")) ? -1 : int(parts[10]);  
+            boolean cancelled = int(parts[13]) == 1;  
+            int distance = int(parts[15]);  
+
+            
+            Datapoint dp = new dataPoint(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance);
+            Datapoint.add(dp);
+        }
+    }
+
+    //display 
+    for (Datapoint dp : Datapoint) {
+        dp.display();
+    }
+   
+}
+
+
+class Datapoint {
+    String flightDate;
+    String carrier;
+    String flightNumber;
+    String origin;
+    String originCity;
+    String dest;
+    String destCity;
+    int crsDepTime;
+    int depTime;
+    boolean cancelled;
+    int distance;
+
+    Datapoint(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+        this.flightDate = flightDate;
+        this.carrier = carrier;
+        this.flightNumber = flightNumber;
+        this.origin = origin;
+        this.originCity = originCity;
+        this.dest = dest;
+        this.destCity = destCity;
+        this.crsDepTime = crsDepTime;
+        this.depTime = depTime;
+        this.cancelled = cancelled;
+        this.distance = distance;
+    }
+
+    // kinda toString
+    void display() {
+        println(flightDate + " | " + carrier + flightNumber + " | " + origin + " → " + dest +
+               " | Dep: " + (depTime == -1 ? "N/A" : depTime) +
+               " | Distance: " + distance + " miles" +
+               " | " + (cancelled ? "CANCELLED" : "On Time"));
+    }
+}
 
             
             dataPoint dp = new dataPoint(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance);
@@ -32,7 +100,7 @@ void readData() {
 }
 
 
-class dataPoint {
+class Datapoint {
     String flightDate;
     String carrier;
     String flightNumber;
@@ -45,7 +113,7 @@ class dataPoint {
     boolean cancelled;
     int distance;
 
-    dataPoint(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+    Datapoint(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
         this.flightDate = flightDate;
         this.carrier = carrier;
         this.flightNumber = flightNumber;
