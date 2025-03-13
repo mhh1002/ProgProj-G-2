@@ -30,6 +30,23 @@ void setup() {
 
 
   readData(); // read file
+
+ // Load the file
+  String[] lines = loadStrings("flights_full.csv"); // Replace with your file path
+
+  // Initialize the list of datapoints
+  datapoints = new ArrayList<Datapoint>();
+
+  // Create a Datapoint instance for each line
+  for (String line : lines) {
+    Datapoint dp = new Datapoint(line);
+    datapoints.add(dp);
+  }
+
+  // Display all datapoints (optional)
+  for (Datapoint dp : datapoints) {
+    dp.display();
+  }
 }
 
 void draw () {
