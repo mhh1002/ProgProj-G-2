@@ -28,7 +28,6 @@ widget2=new Widget(900, 50, 100, 40,
      currentScreen = screen1;
 
       
-  readData(); // read file
 
 }
 
@@ -43,6 +42,8 @@ switch(event) {
 case EVENT_BUTTON1:
 println("print data");
 currentScreen = screen2;
+readData(); // read file
+
 break;
 case EVENT_BUTTON2:
 println("backward pressed");
