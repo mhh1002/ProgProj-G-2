@@ -1,6 +1,6 @@
 void readData() {
     String[] lines = loadStrings("flights_full.csv");  
-    datapoints = new ArrayList<Datapoint>();  // initialize ArrayList
+    dataPoints = new ArrayList<dataPoint>();  // initialize ArrayList
 
     for (int i = 1; i < lines.length; i++) {  
         String[] parts = split(lines[i], ",");
@@ -18,21 +18,21 @@ void readData() {
             int distance = int(parts[15]);  
 
             
-            Datapoint dp = new Datapoint(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance);
-            datapoints.add(dp);
+            dataPoint dp = new dataPoint(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance);
+            dataPoints.add(dp);
         }
     }
 
     //display 
-    for (Datapoint dp : datapoints) {
+    for (dataPoints dp : dataPoints) {
         dp.display();
     }
     
-    println("Loaded " + datapoints.size() + " flights.");
+    println("Loaded " + dataPoints.size() + " flights.");
 }
 
 
-class Datapoint {
+class dataPoint {
     String flightDate;
     String carrier;
     String flightNumber;
@@ -45,7 +45,7 @@ class Datapoint {
     boolean cancelled;
     int distance;
 
-    Datapoint(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+    dataPoint(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
         this.flightDate = flightDate;
         this.carrier = carrier;
         this.flightNumber = flightNumber;
