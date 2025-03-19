@@ -1,0 +1,232 @@
+1. Given Date Range: Display with Date Input Widgets
+int startDate, endDate;
+boolean showDateInputScreen = true;
+boolean showBarChart = false;
+int[] dailyFlights = {10, 15, 20, 25, 18, 12, 8}; // Example flight data
+String[] days = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
+
+void setup() {
+  size(800, 600);
+}
+
+void draw() {
+  background(240);
+  
+  if (showDateInputScreen) {
+    // Show Date Input Screen
+    fill(0);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text("Enter Date Range (yyyymmdd)", width / 2, height / 2 - 60);
+    
+    fill(255);
+    rect(width / 2 - 80, height / 2 - 20, 160, 30);
+    fill(0);
+    textSize(16);
+    text("From Date", width / 2, height / 2 - 5);
+    
+    rect(width / 2 - 80, height / 2 + 20, 160, 30);
+    text("To Date", width / 2, height / 2 + 35);
+    
+    fill(0, 200, 0);
+    rect(width / 2 - 50, height / 2 + 70, 100, 30);
+    fill(255);
+    text("Confirm", width / 2, height / 2 + 85);
+  }
+
+  // Show Bar Chart after confirming the date range
+  if (showBarChart) {
+    drawBarChartForDateRange();
+  }
+}
+
+void mousePressed() {
+  if (showDateInputScreen) {
+    if (mouseX > width / 2 - 50 && mouseX < width / 2 + 50 && mouseY > height / 2 + 70 && mouseY < height / 2 + 100) {
+      // Simulate Date Range Confirmation
+      showDateInputScreen = false;
+      showBarChart = true;
+    }
+  }
+}
+
+void drawBarChartForDateRange() {
+  int barWidth = 50;
+  int barSpacing = 30;
+  
+  for (int i = 0; i < dailyFlights.length; i++) {
+    int x = i * (barWidth + barSpacing) + 50;
+    int y = height - dailyFlights[i] - 50;
+    
+    fill(100, 150, 250);
+    rect(x, y, barWidth, dailyFlights[i]);
+
+    fill(0);
+    textSize(14);
+    textAlign(CENTER, CENTER);
+    text(days[i], x + barWidth / 2, height - 20);
+  }
+}
+
+
+2. For Monthly Data for Lateness/Cancelled/Delayed: Display with 3 Buttons：
+boolean showCancelled = false;
+boolean showDelayed = false;
+boolean showLate = false;
+
+void setup() {
+  size(800, 600);
+  createButtons();
+}
+
+void draw() {
+  background(240);
+  
+  if (showCancelled) {
+    drawCancelledBarChart();
+  } else if (showDelayed) {
+    drawDelayedBarChart();
+  } else if (showLate) {
+    drawLateBarChart();
+  }
+}
+
+void createButtons() {
+  createButton("Cancelled", 100, 50);
+  createButton("Delayed", 100, 100);
+  createButton("Late", 100, 150);
+}
+
+void createButton(String label, int x, int y) {
+  fill(200);
+  rect(x, y, 200, 40);
+  fill(0);
+  text(label, x + 100, y + 20);
+}
+
+void mousePressed() {
+  if (mouseX > 100 && mouseX < 300) {
+    if (mouseY > 50 && mouseY < 90) {
+      showCancelled = true;
+      showDelayed = false;
+      showLate = false;
+    } else if (mouseY > 100 && mouseY < 140) {
+      showCancelled = false;
+      showDelayed = true;
+      showLate = false;
+    } else if (mouseY > 150 && mouseY < 190) {
+      showCancelled = false;
+      showDelayed = false;
+      showLate = true;
+    }
+  }
+}
+
+void drawCancelledBarChart() {
+  int[] cancelledFlights = {2, 3, 1, 4, 2, 5, 3}; // Example data
+  String[] days = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
+  for (int i = 0; i < cancelledFlights.length; i++) {
+    // Draw cancelled flight data as a bar chart
+  }
+}
+
+void drawDelayedBarChart() {
+  // Similar to cancelled, but for delayed data
+}
+
+void drawLateBarChart() {
+  // Similar to cancelled, but for late flights
+}
+
+
+
+3. Origin City Search: Display with a New Screen and a Search Box
+String originCitySearch = "";
+boolean showOriginSearchScreen = false;
+
+void setup() {
+  size(800, 600);
+  createOriginSearchButton();
+}
+
+void draw() {
+  background(240);
+
+  if (showOriginSearchScreen) {
+    displayOriginSearchScreen();
+  }
+}
+
+void createOriginSearchButton() {
+  createButton("Search by Origin City", 100, 50);
+}
+
+void mousePressed() {
+  if (mouseX > 100 && mouseX < 300 && mouseY > 50 && mouseY < 90) {
+    showOriginSearchScreen = true;
+  }
+}
+
+void displayOriginSearchScreen() {
+  fill(0);
+  textSize(20);
+  textAlign(CENTER, CENTER);
+  text("Enter Origin City", width / 2, height / 2 - 60);
+  
+  fill(255);
+  rect(width / 2 - 80, height / 2 - 20, 160, 30);
+  fill(0);
+  textSize(16);
+  text("Search", width / 2, height / 2 - 5);
+  
+  // Handle search functionality (simulated here)
+  if (originCitySearch.equals("LAX")) {
+    // Display all flights from LAX (simulated)
+  }
+}
+
+
+4. Arrival City Search: Display with a New Screen and a Search Box
+String arrivalCitySearch = "";
+boolean showArrivalSearchScreen = false;
+
+void setup() {
+  size(800, 600);
+  createArrivalSearchButton();
+}
+
+void draw() {
+  background(240);
+
+  if (showArrivalSearchScreen) {
+    displayArrivalSearchScreen();
+  }
+}
+
+void createArrivalSearchButton() {
+  createButton("Search by Arrival City", 100, 100);
+}
+
+void mousePressed() {
+  if (mouseX > 100 && mouseX < 300 && mouseY > 100 && mouseY < 140) {
+    showArrivalSearchScreen = true;
+  }
+}
+
+void displayArrivalSearchScreen() {
+  fill(0);
+  textSize(20);
+  textAlign(CENTER, CENTER);
+  text("Enter Arrival City", width / 2, height / 2 - 60);
+  
+  fill(255);
+  rect(width / 2 - 80, height / 2 - 20, 160, 30);
+  fill(0);
+  textSize(16);
+  text("Search", width / 2, height / 2 - 5);
+  
+  // Handle search functionality (simulated here)
+  if (arrivalCitySearch.equals("JFK")) {
+    // Display all flights arriving at JFK (simulated)
+  }
+}
