@@ -1,0 +1,100 @@
+// List to store flights for selected daate
+ArrayList<DataPoint> flightsForDate;
+ArrayList<DataPoint> allFlights = new ArrayList<DataPoint>();
+
+// Variables for scrolling
+int scrollOffset = 0;
+int rowHeight = 30;
+boolean showFlightScreen = false; // Switch between bar chart and flight details screen
+String selectedDate = "";
+
+void setup() {
+  size(800, 400);
+  flightsForDate = new ArrayList<DataPoint>();
+  loadFlightData("flights2k.csv"); // Load all the flights in allFlights
+}
+
+void draw() {
+  background(240);
+
+  if (showFlightScreen) {
+    displayFlights();
+    drawBackButton();
+  }
+}
+
+// Add each flight with detail to allFlights
+void loadFlightData(String file) {
+  String[] rows = loadStrings(file);
+  for (int i = 1; i < rows.length; i++) { // Skip header
+    String[] data = split(rows[i], ",") ;
+
+    if (data.length >= 18) { // Prevent too less info and error throws
+      DataPoint flight = new DataPoint(data[0], data[1], int(data[2]), data[3], data[4], data[5],
+        int(data[6]), data[7], data[8], data[9], int(data[10]), int(data[11]), int(data[12]),
+        int(data[13]), int(data[14]), int(data[15]), int(data[16]), int(data[17]));
+
+      allFlights.add(flight);
+    }
+  }
+}
+
+void displayFlights() {
+  fill(0);
+  textSize(14);
+  int y = 50 - scrollOffset; // intial y position
+
+  for (int i = 0; i < flightsForDate.size(); i++) {
+    DataPoint dp = flightsForDate.get(i);
+
+    if (y > 30 && y < height - 30) {
+      String flightInfo = dp.getDisplayString();
+      text(flightInfo, 20, y); // Display flight details
+    }
+    y += rowHeight; // Move down for next query
+  }
+}
+
+void mouseWheel(MouseEvent event) {
+  if (showFlightScreen) {
+    scrollOffset += event.getCount() * rowHeight; // Adjust scroll pos based on wheel movement
+    scrollOffset = constrain(scrollOffset, 0, max(0, flightsForDate.size() * rowHeight - height + 60)); // Ensure in the screen
+  }
+}
+
+// Can be replaced with a widget
+void drawBackButton() {
+  fill(200, 0, 0);
+  rect(10, 10, 80, 30);
+  fill(255);
+  textSize(16);
+  text("Back", 30, 30);
+}
+
+// Can be replaced by widget class
+void mousePressed() {
+  if (showFlightScreen) {
+    if (mouseX > 10 && mouseX < 90 && mouseY > 10 && mouseY <  40) {
+      showFlightScreen = false; // Go back to previous screen
+    }
+  }
+}
+
+// Call this function when bar is clicked
+void onBarClick(String date) {
+  flightsForDate.clear(); // Clear all previous results
+  for (DataPoint dp : allFlights) {
+    if (dp.date.equals(date)) { // Match flight date to selected date
+      flightsForDate.add(dp); // Add flight to List
+    }
+  }
+  selectedDate = date;
+  showFlightScreen = true; // Switch to flight deatils screen
+  scrollOffset = 0; // Reset scrolloffset when new data loaded
+}
+
+
+
+
+
+
