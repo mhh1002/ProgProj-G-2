@@ -1,6 +1,0 @@
-void printAllFlights() {
-    for (FlightData flight : flightList) {  // Loop through each flight in the list
-        println(flight.flightDate + " | " + flight.airlineCode + flight.flightNumber + " | " + 
-                flight.origin + " -> " + flight.dest);  //  Print each flight's details
-    }
-}

@@ -1,4 +1,5 @@
 import java.util.*;
+
 PFont stdFont;
 ArrayList widgetList;
 Screen screen1, screen2, currentScreen;
@@ -7,8 +8,10 @@ final int EVENT_BUTTON2 = 2;
 final int EVENT_NULL=0;
 final int GAP=10;
 color event_Color;
-ArrayList myStrings;
-ArrayList<Datapoint> datapoints;
+
+
+ArrayList<Flight> flights = new ArrayList<>();
+boolean showFlights = false;
 
 void setup() {
 
@@ -29,31 +32,34 @@ void setup() {
 
   currentScreen = screen1;
 
-
   readData(); // read file
 
  
 }
 
 void draw () {
-  currentScreen.draw();
-}
+currentScreen.draw();
+  if (currentScreen == screen2 && showFlights) {
+    displayFlights();
+  }
+  }
 
 void mousePressed() {
   int event = currentScreen.getEvent(mouseX, mouseY);
-  switch(event) {
-  case EVENT_BUTTON1:
-    println("print data");
-    currentScreen = screen2;
+  switch (event) {
+    case EVENT_BUTTON1:
+      println("Printing flight data:");
+      showFlights = true;
+      currentScreen = screen2;
+      break;
 
-    break;
-  case EVENT_BUTTON2:
-    println("backward pressed");
-    currentScreen = screen1;
-    break;
+    case EVENT_BUTTON2:
+      println("Going back...");
+      showFlights = false;
+      currentScreen = screen1;
+      break;
   }
 }
-
 
 void mouseMoved() {
   for (Widget aWidget : currentScreen.widgets) {
@@ -64,25 +70,4 @@ void mouseMoved() {
       aWidget.mouseNotOver();
     }
   }
-}
-
-void readData () {
-
-  String[] lines = loadStrings("flights_full.csv"); // Replace with your file path
-
-  // Initialize the list of datapoints
-   datapoints = new ArrayList<Datapoint>();
-
-  // Create a Datapoint instance for each line
-  for (String line : lines) {
-    Datapoint dp = new Datapoint(line);
-    datapoints.add(dp);
-  }
-
-  // Display all datapoints (optional)
-  for (Datapoint dp : datapoints) {
-    dp.display();
-  }
-  
-  
 }

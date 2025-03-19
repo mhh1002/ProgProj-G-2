@@ -17,7 +17,6 @@ class Widget {
     labelColor= color(0);
     lineColor = color(0);
   }
-
   void draw() {
     fill(widgetColor);
     stroke(lineColor);
@@ -30,7 +29,6 @@ class Widget {
   void mouseOver() {
     lineColor = color(255);
   }
-
   void mouseNotOver() {
     lineColor = color(0);
   }

@@ -1,17 +1,49 @@
-// Define the Datapoint class
-class Datapoint {
-  String[] data; // Array to store the data from one line
+void readData() {
+    String[] data = loadStrings("flights_full.csv");
+    for (int i = 1; i < data.length; i++) {  //skip  title
+        String[] parts = split(data[i], ",");
+        if (parts.length >= 17) {  
+            String flightDate = parts[0];  
+            String carrier = parts[1];  
+            String flightNumber = parts[2];  
+            String origin = parts[3];  
+            String originCity = parts[4];  
+            String dest = parts[6];  
+            String destCity = parts[7];  
+            int crsDepTime = int(parts[9]);  
+            int depTime = (parts[10].equals("")) ? -1 : int(parts[10]);  
+            boolean cancelled = int(parts[13]) == 1;  
+            int distance = int(parts[15]);  
 
-  // Constructor to initialize the datapoint with a line of data
-  Datapoint(String line) {
-    // Split the line into an array of strings (assuming comma-separated values)
-    this.data = split(line, ',');
-  }
-
-  // Method to display the datapoint (optional)
-  void display() {
-    println("Datapoint: " + join(data, ", "));
-  }
+            
+            flights.add(new Flight(flightDate, carrier, flightNumber, origin, originCity, dest, destCity, crsDepTime, depTime, cancelled, distance));
+        }
+    }
 }
 
-// ArrayList to store all datapoints
+class Flight {
+  String flightDate, carrier, flightNumber, origin, originCity, dest, destCity;
+  int crsDepTime, depTime, distance;
+  boolean cancelled;
+
+  Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String dest, String destCity, int crsDepTime, int depTime, boolean cancelled, int distance) {
+    this.flightDate = flightDate;
+    this.carrier = carrier;
+    this.flightNumber = flightNumber;
+    this.origin = origin;
+    this.originCity = originCity;
+    this.dest = dest;
+    this.destCity = destCity;
+    this.crsDepTime = crsDepTime;
+    this.depTime = depTime;
+    this.cancelled = cancelled;
+    this.distance = distance;
+  }
+
+  public String toString() {
+    return flightDate + " | " + carrier + flightNumber + " | " + origin + " → " + dest +
+           " | Dep: " + (depTime == -1 ? "N/A" : depTime) +
+           " | Distance: " + distance + " miles" +
+           " | " + (cancelled ? "CANCELLED" : "On Time");
+  }
+}
