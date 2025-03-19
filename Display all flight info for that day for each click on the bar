@@ -1,0 +1,94 @@
+ArrayList<String> flightData = new ArrayList<String>();  // Store flight data for the selected date
+boolean flightInfoScreen = false;
+int selectedBarIndex = -1;
+
+void setup() {
+  size(800, 400);
+  textSize(14);
+}
+
+void draw() {
+  background(240);
+
+  if (flightInfoScreen) {
+    displayFlightDetails();
+  } else {
+    drawBarChart();
+  }
+}
+
+void drawBarChart() {
+  int barWidth = 80;
+  int barSpacing = 30;
+  int chartHeight = 200;
+  
+  int[] values = {50, 100, 75, 125, 90};  // Heights of bars
+  String[] labels = {"20250301", "20250302", "20250303", "20250304", "20250305"}; // Example dates
+
+  for (int i = 0; i < values.length; i++) {
+    int x = i * (barWidth + barSpacing) + 50;
+    int y = height - values[i] - 50;
+    
+    fill(100, 150, 250);
+    rect(x, y, barWidth, values[i]);
+
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text(labels[i], x + barWidth / 2, height - 20);
+  }
+}
+
+void displayFlightDetails() {
+  fill(0);
+  textAlign(LEFT);
+  int yPosition = 50;
+  
+  for (String flight : flightData) {
+    text(flight, 50, yPosition);
+    yPosition += 20;
+  }
+  
+  fill(200, 0, 0);
+  rect(width - 80, 10, 60, 30);
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Back", width - 50, 25);
+}
+
+void mousePressed() {
+  if (flightInfoScreen) {
+    if (mouseX > width - 80 && mouseX < width - 20 && mouseY > 10 && mouseY < 40) {
+      flightInfoScreen = false;
+    }
+  } else {
+    int barWidth = 80;
+    int barSpacing = 30;
+
+    for (int i = 0; i < 5; i++) {
+      int x = i * (barWidth + barSpacing) + 50;
+      int y = height - 200 - 50;
+
+      if (mouseX > x && mouseX < x + barWidth && mouseY > y && mouseY < height - 50) {
+        selectedBarIndex = i;
+        fetchFlightData(i); // Fetch flight data for the selected date
+        flightInfoScreen = true;
+        break;
+      }
+    }
+  }
+}
+
+void fetchFlightData(int index) {
+  flightData.clear();
+  
+  String[] sampleFlights = {
+    "AA123, LAX to JFK, Departure: 1400 (Delayed: 10min), Arrival: 1800 (Delayed: 15min), Distance: 2475mi",
+    "DL456, ORD to ATL, Departure: 0900 (On-time), Arrival: 1130 (On-time), Distance: 606mi",
+    "UA789, SFO to MIA, Departure: 1200 (Delayed: 5min), Arrival: 2000 (Delayed: 25min), Distance: 2580mi"
+  };
+
+  for (String flight : sampleFlights) {
+    flightData.add(flight);
+  }
+}
