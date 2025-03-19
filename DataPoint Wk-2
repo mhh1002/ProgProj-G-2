@@ -1,0 +1,42 @@
+class DataPoint {
+  String date, carrier, origin, originCity, originState, dest, destCity, destState, flightNumber;
+  int carrierNumber, originWac, destWac, depTime, arrTime, crsDepTime, crsArrTime;
+  boolean cancelled, diverted;
+  int distance;
+
+  DataPoint(String date, String carrier, int carrierNumber, String origin,
+    String originCity, String originState, int originWac, String dest, String destCity,
+    String destState, int destWac, int crsDepTime, int depTime, int crsArrTime,
+    int arrTime, int cancelled, int diverted, int distance) {
+    this.date = date;
+    this.carrier = carrier;
+    this.carrierNumber = carrierNumber;
+    this.origin = origin;
+    this.originCity = originCity;
+    this.originState = originState;
+    this.originWac = originWac;
+    this.dest = dest;
+    this.destCity = destCity;
+    this.destState = destState;
+    this.destWac = destWac;
+    this.crsDepTime = crsDepTime;
+    this.depTime = depTime;
+    this.crsArrTime = crsArrTime;
+    this.arrTime = arrTime;
+    this.cancelled = cancelled == 1 ? true : false;
+    this.diverted = diverted == 1 ? true : false;
+    this.distance = distance;
+    this.flightNumber = carrier + carrierNumber;
+  }
+
+  String getDisplayString() {
+    if (cancelled) {
+      return "Cancelled: " + flightNumber + " from " + origin + " to " + dest + ", Scheduled at: " +
+        crsDepTime + " - " + crsArrTime + ", Distance: " + distance;
+    } else {
+      return flightNumber + " from " + origin + " to " + dest + ", Departed at: " + depTime +
+        " (Delay for: " + (depTime - crsDepTime) + "mins), Arrived at: " + arrTime +
+        " (Delay for: " + (arrTime - crsArrTime) + "mins), Distance: " + distance + (diverted ? ", Diverted" : "");
+    }
+  }
+}
