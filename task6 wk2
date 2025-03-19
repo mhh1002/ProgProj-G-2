@@ -130,12 +130,40 @@ void drawCancelledBarChart() {
   }
 }
 
+int[] delayedFlights = {5, 12, 8, 15, 6, 10, 9};  // Example delayed flights per day (replace with actual data)
+int[] lateFlights = {3, 8, 7, 10, 4, 11, 5};     // Example late flights per day (replace with actual data)
+String[] days = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
+int barWidth = 50;
+int barSpacing = 30;
+
 void drawDelayedBarChart() {
-  // Similar to cancelled, but for delayed data
+  for (int i = 0; i < delayedFlights.length; i++) {
+    int x = i * (barWidth + barSpacing) + 50;
+    int y = height - delayedFlights[i] - 50;
+    
+    fill(255, 0, 0);  // Red color for delayed flights
+    rect(x, y, barWidth, delayedFlights[i]);
+
+    fill(0);
+    textSize(14);
+    textAlign(CENTER, CENTER);
+    text(days[i], x + barWidth / 2, height - 20);
+  }
 }
 
 void drawLateBarChart() {
-  // Similar to cancelled, but for late flights
+  for (int i = 0; i < lateFlights.length; i++) {
+    int x = i * (barWidth + barSpacing) + 50;
+    int y = height - lateFlights[i] - 50;
+    
+    fill(0, 0, 255);  // Blue color for late flights
+    rect(x, y, barWidth, lateFlights[i]);
+
+    fill(0);
+    textSize(14);
+    textAlign(CENTER, CENTER);
+    text(days[i], x + barWidth / 2, height - 20);
+  }
 }
 
 
