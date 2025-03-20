@@ -86,7 +86,7 @@ void fetchFlightData(int index) {
     "AA123, LAX to JFK, Departure: 1400 (Delayed: 10min), Arrival: 1800 (Delayed: 15min), Distance: 2475mi",
     "DL456, ORD to ATL, Departure: 0900 (On-time), Arrival: 1130 (On-time), Distance: 606mi",
     "UA789, SFO to MIA, Departure: 1200 (Delayed: 5min), Arrival: 2000 (Delayed: 25min), Distance: 2580mi"
-  };
+  }
 
   for (String flight : sampleFlights) {
     flightData.add(flight);
