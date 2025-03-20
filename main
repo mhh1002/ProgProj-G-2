@@ -1,73 +1,140 @@
 import java.util.*;
 
 PFont stdFont;
-ArrayList widgetList;
-Screen screen1, screen2, currentScreen;
-final int EVENT_BUTTON1=1;
-final int EVENT_BUTTON2 = 2;
-final int EVENT_NULL=0;
-final int GAP=10;
+ArrayList<Flight> flights = new ArrayList<>();
+ArrayList<Flight> filteredFlights = new ArrayList<>();
+boolean showFlights = false;
+String searchQuery = "";
+boolean searchByOrigin = false;
+boolean searchByArrival = false;
+boolean inputError = false;
+
+Screen mainScreen, originSearchScreen, arrivalSearchScreen, currentScreen;
+final int EVENT_ORIGIN_SEARCH = 3;
+final int EVENT_ARRIVAL_SEARCH = 4;
+final int EVENT_SEARCH = 5;
+final int EVENT_BACK = 2;
+final int EVENT_NULL = 0;
+final int GAP = 10;
 color event_Color;
 
-
-ArrayList<Flight> flights = new ArrayList<>();
-boolean showFlights = false;
-
 void setup() {
-
-  Widget widget1, widget2;
-  size (1000, 800);
-  screen1 = new Screen(color(255));
-  screen2 = new Screen(color(255));
-
-  stdFont=loadFont("AgencyFB-Bold-20.vlw");
-  textFont(stdFont);
-  widget1=new Widget(50, 50, 180, 40,
-    "Print data", color(200, 0, 0), stdFont, EVENT_BUTTON1);
-  screen1.addWidget(widget1);
-
-  widget2=new Widget(900, 50, 100, 40,
-    "Back", color(0, 200, 0), stdFont, EVENT_BUTTON2);
-  screen2.addWidget(widget2);
-
-  currentScreen = screen1;
-
-  readData(); // read file
-
- 
+    size(1000, 800);
+    stdFont = loadFont("AgencyFB-Bold-20.vlw");
+    textFont(stdFont);
+    
+    mainScreen = new Screen(color(255));
+    originSearchScreen = new Screen(color(255));
+    arrivalSearchScreen = new Screen(color(255));
+    
+    Widget widget1 = new Widget(50, 50, 180, 40, "Print data", color(200, 0, 0), stdFont, EVENT_ORIGIN_SEARCH);
+    Widget widget2 = new Widget(900, 50, 100, 40, "Back", color(0, 200, 0), stdFont, EVENT_BACK);
+    
+    mainScreen.addWidget(widget1);
+    
+    Widget originSearchButton = new Widget(50, 100, 250, 40, "Search by Origin", color(0, 0, 200), stdFont, EVENT_ORIGIN_SEARCH);
+    Widget arrivalSearchButton = new Widget(50, 160, 250, 40, "Search by Arrival", color(200, 100, 0), stdFont, EVENT_ARRIVAL_SEARCH);
+    
+    mainScreen.addWidget(originSearchButton);
+    mainScreen.addWidget(arrivalSearchButton);
+    
+    Widget searchButton = new Widget(400, 200, 150, 40, "Search", color(0, 200, 0), stdFont, EVENT_SEARCH);
+    
+    originSearchScreen.addWidget(searchButton);
+    originSearchScreen.addWidget(widget2);
+    arrivalSearchScreen.addWidget(searchButton);
+    arrivalSearchScreen.addWidget(widget2);
+    
+    currentScreen = mainScreen;
+    readData();
 }
 
-void draw () {
-currentScreen.draw();
-  if (currentScreen == screen2 && showFlights) {
-    displayFlights();
-  }
-  }
+void draw() {
+    currentScreen.draw();
+    if (currentScreen == originSearchScreen || currentScreen == arrivalSearchScreen) {
+        drawSearchBox();
+        displayFilteredFlights();
+        if (inputError) {
+            displayWarning();
+        }
+    }
+}
+
+void drawSearchBox() {
+    fill(255);
+    rect(50, 200, 300, 40);
+    fill(0);
+    if (searchQuery.isEmpty()) {
+        fill(150);
+        text("Enter city or abbreviation...", 60, 230);
+    } else {
+        fill(0);
+        text(searchQuery, 60, 230);
+    }
+}
+
+void displayFilteredFlights() {
+    fill(0);
+    textSize(18);
+    int y = 300;
+    if (!filteredFlights.isEmpty()) {
+        text("Total Flights: " + filteredFlights.size(), 50, y);
+        y += 25;
+    }
+    for (Flight flight : filteredFlights) {
+        text(flight.toString(), 50, y);
+        y += 25;
+    }
+}
+
+void displayWarning() {
+    fill(255, 0, 0);
+    textSize(18);
+    text("Invalid input. Please enter a valid city abbreviation or full name.", 50, 280);
+}
+
 
 void mousePressed() {
-  int event = currentScreen.getEvent(mouseX, mouseY);
-  switch (event) {
-    case EVENT_BUTTON1:
-      println("Printing flight data:");
-      showFlights = true;
-      currentScreen = screen2;
-      break;
-
-    case EVENT_BUTTON2:
-      println("Going back...");
-      showFlights = false;
-      currentScreen = screen1;
-      break;
-  }
-}
-
-void mouseMoved() {
-  for (Widget aWidget : currentScreen.widgets) {
-    int event = aWidget.getEvent(mouseX, mouseY);
-    if (event != EVENT_NULL) {
-      aWidget.mouseOver();
-    } else {
-      aWidget.mouseNotOver();
+    int event = currentScreen.getEvent(mouseX, mouseY);
+    switch (event) {
+        case EVENT_ORIGIN_SEARCH:
+            searchQuery = "";
+            searchByOrigin = true;
+            searchByArrival = false;
+            filteredFlights.clear();
+            inputError = false;
+            currentScreen = originSearchScreen;
+            break;
+        case EVENT_ARRIVAL_SEARCH:
+            searchQuery = "";
+            searchByOrigin = false;
+            searchByArrival = true;
+            filteredFlights.clear();
+            inputError = false;
+            currentScreen = arrivalSearchScreen;
+            break;
+        case EVENT_SEARCH:
+            searchFlights();
+            break;
+        case EVENT_BACK:
+            searchQuery = "";
+            searchByOrigin = false;
+            searchByArrival = false;
+            filteredFlights.clear();
+            inputError = false;
+            currentScreen = mainScreen;
+            break;
     }
-  }
 }
+
+void keyPressed() {
+    if (key == BACKSPACE && searchQuery.length() > 0) {
+        searchQuery = searchQuery.substring(0, searchQuery.length() - 1);
+    } else if (key == ENTER) {
+        searchFlights();
+    } else if (key != CODED) {
+        searchQuery += key;
+    }
+}
+
+
