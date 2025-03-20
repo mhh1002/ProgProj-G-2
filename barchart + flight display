@@ -1,0 +1,150 @@
+import processing.data.Table;
+import java.util.ArrayList;
+
+ArrayList<String> flightData = new ArrayList<String>();  // Store flight data for the selected day
+boolean flightInfoScreen = false;  // Flag to switch to the flight data screen
+int selectedBarIndex = -1;  // Index of the selected bar
+
+void setup() {
+  // Set the size of the canvas
+  size(800, 400);
+  
+  // Load the CSV file into a Table object
+  Table table = loadTable("flights_full.csv", "header");
+
+  if (table == null) {
+    println("Error loading file.");
+    return;  // Exit setup() if the file isn't loaded
+  }
+
+  // Create an array to store the count of flights for each day of the month
+  int[] flightsPerDay = new int[31]; // Assuming a maximum of 31 days in a month
+
+  // Iterate through each row of the table
+  for (int i = 0; i < table.getRowCount(); i++) {
+    // Get the date string from the first column (index 0)
+    String dateTime = table.getString(i, 0);
+
+    // Check if dateTime is not empty
+    if (dateTime.length() > 0) {
+      // Split the date and time using space as delimiter
+      String[] dateParts = split(dateTime, ' ');
+
+      // Split the date part (MM/DD/YYYY) by the slash
+      String[] dateComponents = split(dateParts[0], '/'); // MM/DD/YYYY
+
+      // Extract the day part (index 1 in the array, which is "DD")
+      String dayString = dateComponents[1];  // Get "DD"
+      int day = int(dayString);  // Convert the day string to an integer
+
+      // Increment the count for that day if it's valid
+      if (day >= 1 && day <= 31) {
+        flightsPerDay[day - 1]++; // Subtract 1 because array indices start at 0
+      }
+    }
+  }
+
+  // Draw the Bar Chart
+  drawBarChart(flightsPerDay);
+}
+
+void draw() {
+  // If we're on the flight info screen, draw the flight information
+  if (flightInfoScreen) {
+    drawFlightInfoScreen();
+  }
+}
+
+void drawBarChart(int[] flightsPerDay) {
+  // Set up chart parameters
+  int barWidth = width / 31;  // Width of each bar
+  int margin = 50;            // Space between chart and edges of canvas
+  int chartHeight = height - 2 * margin; // Height of the chart
+  
+  // Draw the Y Axis (Number of flights)
+  stroke(0);
+  line(margin, margin, margin, height - margin);
+  
+  // Draw the X Axis (Days of the month)
+  line(margin, height - margin, width - margin, height - margin);
+  
+  // Draw the bars for each day
+  for (int i = 0; i < flightsPerDay.length; i++) {
+    // Calculate the height of the bar based on the number of flights
+    float barHeight = map(flightsPerDay[i], 0, max(flightsPerDay), 0, chartHeight);
+    
+    // Draw the bar
+    fill(100, 150, 255);  // Set the color for the bars
+    rect(margin + i * barWidth, height - margin - barHeight, barWidth - 2, barHeight);
+    
+    // Draw labels for each day (on x-axis)
+    fill(0);
+    textSize(10);
+    textAlign(CENTER);
+    text(i + 1, margin + i * barWidth + barWidth / 2, height - margin + 15);  // Day number
+    
+    // Draw the flight count label on top of the bar
+    if (flightsPerDay[i] > 0) {
+      text(flightsPerDay[i], margin + i * barWidth + barWidth / 2, height - margin - barHeight - 5); // Flight count
+    }
+  }
+}
+void mousePressed() {
+  if (flightInfoScreen) {
+    // Check if the back button is clicked
+    if (mouseX > width - 80 && mouseX < width - 20 && mouseY > 10 && mouseY < 40) {
+      flightInfoScreen = false;  // Go back to the bar chart screen
+      redraw();  // Redraw the bar chart
+    }
+  } else {
+    int barWidth = width / 31;
+
+    // Check if a bar was clicked
+    for (int i = 0; i < 31; i++) {
+      int x = width / 31 * i;
+      if (mouseX > x && mouseX < x + barWidth && mouseY < height - 50) {
+        selectedBarIndex = i;
+        fetchFlightData(i + 1); // Fetch flight data for the selected date (i + 1 for day)
+        flightInfoScreen = true;  // Switch to the flight info screen
+        break;
+      }
+    }
+  }
+}
+
+// Fetch flight data for a given day
+void fetchFlightData(int day) {
+  flightData.clear();
+
+  // Here you would filter flights based on the selected day from the CSV file
+  // For demonstration purposes, we'll simulate flight data:
+  flightData.add("Flight AA123, LAX to JFK, Departure: 1400 (Delayed: 10min), Arrival: 1800 (Delayed: 15min), Distance: 2475mi");
+  flightData.add("Flight DL456, ORD to ATL, Departure: 0900 (On-time), Arrival: 1130 (On-time), Distance: 606mi");
+}
+
+// Draw the flight information screen
+void drawFlightInfoScreen() {
+  background(255);  // Set background to white
+
+  fill(0);
+  textAlign(LEFT);
+
+  fill(200, 0, 0);
+  rect(width - 80, 10, 60, 30);
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Back", width - 50, 25);
+
+  // Display the flight data
+  fill(0);
+  textSize(14);
+  textAlign(LEFT, TOP);
+  text("Flights on Day " + (selectedBarIndex + 1) + ":", 50, 50);  // Title
+
+  int yOffset = 70;
+  for (String flight : flightData) {
+    text(flight, 50, yOffset);
+    yOffset += 30;  // Space between flight data
+  }
+}
