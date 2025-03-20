@@ -10,6 +10,7 @@ final int GAP=13;
 boolean mainScreenOn;
 Widget widget1, widget2, widget3, widget4;
 MainScreen myMainScreen;
+Widget dateRangeWid, originCityWid, arrivalCityWid, canDelLatWid;
 Screen dateRangeScr, originCityScr, arrivalCityScr, canDelLatScr;
 Screen currentScreen;
 
@@ -19,7 +20,7 @@ class Widget
   int x, y, width, height;
   String label;
   int event;
-  color widgetColor, labelColor;
+  color widgetColor, labelColor, mouseHoverColor, defaultColor;
   PFont widgetFont;
   Widget(int x, int y, int width, int height, String label,
     color widgetColor, PFont widgetFont, int event)
@@ -31,6 +32,7 @@ class Widget
     this.label = label;
     this.event = event;
     this.widgetColor = widgetColor;
+    this.defaultColor = widgetColor;
     this.widgetFont = widgetFont;
     labelColor = color (0);
   }
@@ -42,6 +44,14 @@ class Widget
     fill(255);
     textFont(widgetFont);
     text(label, x+GAP, y+height-GAP);
+  }
+  void changeColor(int mX, int mY, color mouseHoverColor)
+  {
+    this.mouseHoverColor = mouseHoverColor;
+    if (mX > x && mX < x + width && mY > y && mY < y + height)
+      widgetColor = mouseHoverColor;
+    else
+      widgetColor = defaultColor;
   }
   int getEvent(int mX, int mY)
   {
@@ -93,14 +103,17 @@ class MainScreen
     widgets.add (new Widget(225, 300, 350, 40, label4,
       widgetColor, labelFont, CAN_DEL_LAT));
   }
-  void draw()
+  void draw(color mouseHoverColor)
   {
     background(backgroundColor);
     fill(0);
     textFont(labelFont);
     text("Search by:", 225, 60);
     for (Widget w : widgets)
+    {
       w.draw();
+      w.changeColor(mouseX, mouseY, mouseHoverColor);
+    }
   }
 }
 
@@ -130,7 +143,7 @@ class Screen
     scrollY -= amount * 20;
     scrollY = constrain(scrollY, maxScroll, 0);
   }
-  void draw()
+  void draw(color mouseHoverColor)
   {
     pushMatrix();
     translate(0, scrollY);
@@ -139,6 +152,7 @@ class Screen
     textFont(stdFont);
     text(screenName, Xpos, Ypos);
     w.draw();
+    w.changeColor(mouseX, mouseY, mouseHoverColor);
     popMatrix();
   }
 }
@@ -168,10 +182,9 @@ void setup()
 void draw()
 {
   if (!mainScreenOn)
-  {
-    currentScreen.draw();
-  } else
-    myMainScreen.draw();
+    currentScreen.draw(color(0, 41, 224));
+  else
+    myMainScreen.draw(color(0, 41, 224));
 }
 
 
@@ -214,8 +227,7 @@ void mousePressed()
         }
       }
     }
-  }
-  else
+  } else
   {
     if (currentScreen != null && currentScreen.w != null)
     {
