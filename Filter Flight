@@ -1,0 +1,35 @@
+void searchFlights() {
+    filteredFlights.clear();
+    inputError = false;
+    
+    if (!validateInput()) {
+        inputError = true;
+        return;
+    }
+    
+    for (Flight f : flights) {
+        if (searchByOrigin && (f.originAbb.equalsIgnoreCase(searchQuery) || f.originCity.toLowerCase().contains(searchQuery.toLowerCase()))) {
+            filteredFlights.add(f);
+        } else if (searchByArrival && (f.destAbb.equalsIgnoreCase(searchQuery) || f.destCity.toLowerCase().contains(searchQuery.toLowerCase()))) {
+            filteredFlights.add(f);
+        }
+    }
+    
+}
+
+boolean validateInput() {
+    boolean found = false;
+    for (Flight f : flights) {
+        if (searchByOrigin) {
+            if (f.originAbb.equalsIgnoreCase(searchQuery.trim()) || f.originCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+                found = true;
+            }
+        } else if (searchByArrival) {
+            if (f.destAbb.equalsIgnoreCase(searchQuery.trim()) || f.destCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+                found = true;
+            }
+        }
+    }
+
+    return found;
+}
