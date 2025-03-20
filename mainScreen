@@ -109,25 +109,37 @@ class Screen
 {
   String screenName;
   int Xpos;
-  int Ypos;
+  float Ypos;
   color labelColor;
   color backgroundColor;
+  float scrollY = 0;
+  float maxScroll; //adjust according to your need for your screen
   Widget w = new Widget(10, 10, 68, 40, "back", labelColor, labelFont, BACK);
-  Screen(String screenName, int Xpos, int Ypos, color labelColor, color backgroundColor)
+  Screen(String screenName, int Xpos, float Ypos,
+    color labelColor, color backgroundColor, float maxScroll)
   {
     this.screenName = screenName;
     this.Xpos = Xpos;
     this.Ypos = Ypos;
     this.labelColor = labelColor;
     this.backgroundColor = backgroundColor;
+    this.maxScroll = maxScroll;
+  }
+  void scroll(float amount)
+  {
+    scrollY -= amount * 20;
+    scrollY = constrain(scrollY, maxScroll, 0);
   }
   void draw()
   {
+    pushMatrix();
+    translate(0, scrollY);
     background(backgroundColor);
     fill (0);
     textFont(stdFont);
     text(screenName, Xpos, Ypos);
     w.draw();
+    popMatrix();
   }
 }
 
@@ -140,10 +152,14 @@ void setup()
   myMainScreen = new MainScreen ("Given date range", "Origin city",
     "Arrival city", "Cancelled/Delayed/Late flights"
     , labelColor, 230);
-  dateRangeScr = new Screen ("Given date range screen", 180, 200, labelColor, 230);
-  originCityScr = new Screen ("Origin city screen", 250, 200, labelColor, 230);
-  arrivalCityScr = new Screen ("Arrival city screen", 230, 200, labelColor, 230);
-  canDelLatScr = new Screen ("Cancelled/Delayed/Late flights screen", 80, 200, labelColor, 230);
+  dateRangeScr = new Screen ("Given date range screen",
+    180, 200, labelColor, 230, -1600);
+  originCityScr = new Screen ("Origin city screen",
+    250, 200, labelColor, 230, -1600);
+  arrivalCityScr = new Screen ("Arrival city screen",
+    230, 200, labelColor, 230, -1600);
+  canDelLatScr = new Screen ("Cancelled/Delayed/Late flights screen",
+    80, 200, labelColor, 230, -1600);
   mainScreenOn = true;
   size(800, 400);
 }
@@ -152,46 +168,62 @@ void setup()
 void draw()
 {
   if (!mainScreenOn)
+  {
     currentScreen.draw();
-  else
+  } else
     myMainScreen.draw();
+}
+
+
+void mouseWheel(MouseEvent event)
+{
+  if (!mainScreenOn)
+    currentScreen.scroll(event.getCount());
 }
 
 
 void mousePressed()
 {
   int event;
-  event = myMainScreen.getEvent(mouseX, mouseY);
-  if (event == DATE_RANGE)
+  if (mainScreenOn)
   {
-    mainScreenOn = false;
-    currentScreen = dateRangeScr;
-  } else
-  {
-    if (event == ORIGIN_CITY)
+    event = myMainScreen.getEvent(mouseX, mouseY);
+    if (event == DATE_RANGE)
     {
       mainScreenOn = false;
-      currentScreen = originCityScr;
+      currentScreen = dateRangeScr;
     } else
     {
-      if (event == ARRIVAL_CITY)
+      if (event == ORIGIN_CITY)
       {
         mainScreenOn = false;
-        currentScreen = arrivalCityScr;
+        currentScreen = originCityScr;
       } else
       {
-        if (event == CAN_DEL_LAT)
+        if (event == ARRIVAL_CITY)
         {
           mainScreenOn = false;
-          currentScreen = canDelLatScr;
+          currentScreen = arrivalCityScr;
         } else
         {
-          event = currentScreen.w.getEvent(mouseX, mouseY);
-          if (event == BACK)
+          if (event == CAN_DEL_LAT)
           {
-            mainScreenOn = true;
+            mainScreenOn = false;
+            currentScreen = canDelLatScr;
           }
         }
+      }
+    }
+  }
+  else
+  {
+    if (currentScreen != null && currentScreen.w != null)
+    {
+      event = currentScreen.w.getEvent(mouseX, mouseY);
+      if (event == BACK)
+      {
+        mainScreenOn = true;
+        currentScreen = null;
       }
     }
   }
