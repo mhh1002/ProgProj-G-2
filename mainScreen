@@ -94,13 +94,13 @@ class MainScreen
   }
   void addWidget()
   {
-    widgets.add (new Widget(225, 90, 350, 40, label1,
+    widgets.add (new Widget(325, 230, 350, 40, label1,
       widgetColor, labelFont, DATE_RANGE));
-    widgets.add (new Widget(225, 160, 350, 40, label2,
+    widgets.add (new Widget(325, 300, 350, 40, label2,
       widgetColor, labelFont, ORIGIN_CITY));
-    widgets.add (new Widget(225, 230, 350, 40, label3,
+    widgets.add (new Widget(325, 370, 350, 40, label3,
       widgetColor, labelFont, ARRIVAL_CITY));
-    widgets.add (new Widget(225, 300, 350, 40, label4,
+    widgets.add (new Widget(325, 440, 350, 40, label4,
       widgetColor, labelFont, CAN_DEL_LAT));
   }
   void draw(color mouseHoverColor)
@@ -108,7 +108,7 @@ class MainScreen
     background(backgroundColor);
     fill(0);
     textFont(labelFont);
-    text("Search by:", 225, 60);
+    text("Search by:", 325, 200);
     for (Widget w : widgets)
     {
       w.draw();
@@ -167,15 +167,15 @@ void setup()
     "Arrival city", "Cancelled/Delayed/Late flights"
     , labelColor, 230);
   dateRangeScr = new Screen ("Given date range screen",
-    180, 200, labelColor, 230, -1600);
+    280, 350, labelColor, 230, -1600);
   originCityScr = new Screen ("Origin city screen",
-    250, 200, labelColor, 230, -1600);
+    350, 350, labelColor, 230, -1600);
   arrivalCityScr = new Screen ("Arrival city screen",
-    230, 200, labelColor, 230, -1600);
+    330, 350, labelColor, 230, -1600);
   canDelLatScr = new Screen ("Cancelled/Delayed/Late flights screen",
-    80, 200, labelColor, 230, -1600);
+    180, 350, labelColor, 230, -1600);
   mainScreenOn = true;
-  size(800, 400);
+  size(1000, 700);
 }
 
 
