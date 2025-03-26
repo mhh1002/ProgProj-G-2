@@ -1,17 +1,32 @@
+import processing.data.Table; //<>// //<>//
 // List to store flights for selected daate
 ArrayList<DataPoint> flightsForDate;
 ArrayList<DataPoint> allFlights = new ArrayList<DataPoint>();
 
 // Variables for scrolling
+int initial_y = 60;
+int initial_x = 10;
 int scrollOffset = 0;
 int rowHeight = 30;
+int selectedBarIndex = -1;
+int cancelledCount = 0; // Count for cancelled (1)
+int notCancelledCount = 0; // Count for not cancelled (0)
+float notCancelledHeight;
+float cancelledHeight;
 boolean showFlightScreen = false; // Switch between bar chart and flight details screen
 String selectedDate = "";
+Widget backButton;
 
 void setup() {
-  size(800, 400);
+  size(1000, 400);
   flightsForDate = new ArrayList<DataPoint>();
-  loadFlightData("flights2k.csv"); // Load all the flights in allFlights
+  loadFlightData("flights_full.csv"); // Load all the flights in allFlights
+  countCancelledFlights();
+
+  // Initialise back button
+  PFont buttonFont = createFont("Arail", 16);
+  backButton = new Widget(10, 10, 80, 30, "BACK", color(30, 100, 90), buttonFont, 1);
+  backButton.setLabelColor(color(255));
 }
 
 void draw() {
@@ -19,37 +34,102 @@ void draw() {
 
   if (showFlightScreen) {
     displayFlights();
-    drawBackButton();
+    backButton.draw();
+
+    if (backButton.getEvent(mouseX, mouseY) != backButton.EVENT_NULL) {
+      backButton.mouseOver();
+    } else {
+      backButton.mouseNotOver();
+    }
+  } else {
+    drawBarChart();
   }
 }
 
 // Add each flight with detail to allFlights
 void loadFlightData(String file) {
-  String[] rows = loadStrings(file);
-  for (int i = 1; i < rows.length; i++) { // Skip header
-    String[] data = split(rows[i], ",") ;
+  Table table = loadTable(file, "header");
 
-    if (data.length >= 18) { // Prevent too less info and error throws
-      DataPoint flight = new DataPoint(data[0], data[1], int(data[2]), data[3], data[4], data[5],
-        int(data[6]), data[7], data[8], data[9], int(data[10]), int(data[11]), int(data[12]),
-        int(data[13]), int(data[14]), int(data[15]), int(data[16]), int(data[17]));
+  for (TableRow row : table.rows()) {
+    // Extract data from the row using the CSV column names
+    String date = row.getString("FL_DATE");
+    String carrier = row.getString("MKT_CARRIER");
+    int carrierNumber = row.getInt("MKT_CARRIER_FL_NUM");
+    String origin = row.getString("ORIGIN");
+    String originCity = row.getString("ORIGIN_CITY_NAME");
+    String originState = row.getString("ORIGIN_STATE_ABR");
+    int originWac = row.getInt("ORIGIN_WAC");
+    String dest = row.getString("DEST");
+    String destCity = row.getString("DEST_CITY_NAME");
+    String destState = row.getString("DEST_STATE_ABR");
+    int destWac = row.getInt("DEST_WAC");
+    int crsDepTime = row.getInt("CRS_DEP_TIME");
+    int depTime = row.getInt("DEP_TIME");
+    int crsArrTime = row.getInt("CRS_ARR_TIME");
+    int arrTime = row.getInt("ARR_TIME");
+    int cancelled = row.getInt("CANCELLED");
+    int diverted = row.getInt("DIVERTED");
+    int distance = row.getInt("DISTANCE");
 
-      allFlights.add(flight);
+    // Create a DataPoint object and add it to allFlights
+    DataPoint flight = new DataPoint(
+      date, carrier, carrierNumber, origin, originCity, originState, originWac,
+      dest, destCity, destState, destWac, crsDepTime, depTime, crsArrTime,
+      arrTime, cancelled, diverted, distance
+      );
+    allFlights.add(flight);
+  }
+}
+
+void countCancelledFlights() {
+  for (DataPoint flight : allFlights) {
+    if (flight.cancelled == 1) {
+      cancelledCount++;
+    } else {
+      notCancelledCount++;
     }
   }
 }
 
-void displayFlights() {
+void drawBarChart() {
+  int margin = 100;
+  int chartHeight = height - 2 * margin;
+  int barWidth = (width - 2 * margin) / 2;
+  int maxCount = max(cancelledCount, notCancelledCount);
+
+  stroke(0);
+  line(margin, margin, margin, height - margin);
+  line(margin, height - margin, width - margin, height - margin);
+
+  fill(100, 150, 90);
+  notCancelledHeight = map(notCancelledCount, 0, maxCount, 0, chartHeight);
+  rect(margin, height - margin - notCancelledHeight, barWidth, notCancelledHeight);
+
+  fill(200, 79, 130);
+  cancelledHeight = map(cancelledCount, 0, maxCount, 0, chartHeight);
+  rect(margin + barWidth + 20, height - margin - cancelledHeight, barWidth, cancelledHeight);
+
   fill(0);
+  textAlign(CENTER);
   textSize(14);
-  int y = 50 - scrollOffset; // intial y position
+  text("Not Cancelled", margin + barWidth / 2, height - margin + 30);
+  text("Cancelled", margin + barWidth + 20 + barWidth / 2, height - margin + 30);
+  text("Total: " + notCancelledCount, margin + barWidth / 2, height - margin - notCancelledHeight - 10);
+  text("Total: " + cancelledCount, margin + barWidth + 20 + barWidth / 2, height - margin - cancelledHeight - 10);
+}
+
+void displayFlights() {
+  fill(100, 93, 170);
+  textSize(14);
+  int y = initial_y - scrollOffset; // intial y position
 
   for (int i = 0; i < flightsForDate.size(); i++) {
     DataPoint dp = flightsForDate.get(i);
 
     if (y > 30 && y < height - 30) {
       String flightInfo = dp.getDisplayString();
-      text(flightInfo, 20, y); // Display flight details
+      textAlign(LEFT, 60);
+      text(flightInfo, initial_x, y); // Display flight details
     }
     y += rowHeight; // Move down for next query
   }
@@ -62,39 +142,38 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
-// Can be replaced with a widget
-void drawBackButton() {
-  fill(200, 0, 0);
-  rect(10, 10, 80, 30);
-  fill(255);
-  textSize(16);
-  text("Back", 30, 30);
-}
-
-// Can be replaced by widget class
 void mousePressed() {
   if (showFlightScreen) {
-    if (mouseX > 10 && mouseX < 90 && mouseY > 10 && mouseY <  40) {
-      showFlightScreen = false; // Go back to previous screen
+    if (backButton.getEvent(mouseX, mouseY) == 1) {
+      showFlightScreen = false; // pressed back button
+    }
+  } else {
+    int margin = 100;
+    int barWidth = (width - 2 * margin) / 2;
+    int cancelledBarX = margin + barWidth + 20;
+    int notCancelledBarX = margin;
+    float cancelledBarTop = height - margin - cancelledHeight;
+    float cancelledBarBtm = cancelledBarTop + cancelledHeight;
+    float notCancelledBarTop = height - margin - notCancelledHeight;
+    float notCancelledBarBtm = notCancelledBarTop + notCancelledHeight;
+
+    if (mouseX > notCancelledBarX && mouseX < notCancelledBarX + barWidth && mouseY > notCancelledBarTop && mouseY < notCancelledBarBtm) {
+      onBarClick(false); // Show non-cancelled flights
+    } else if (mouseX > cancelledBarX && mouseX < cancelledBarX + barWidth && mouseY > cancelledBarTop && mouseY < cancelledBarBtm) {
+      onBarClick(true); // Show cancelled flights
     }
   }
 }
 
 // Call this function when bar is clicked
-void onBarClick(String date) {
+void onBarClick(boolean isCancelled) {
   flightsForDate.clear(); // Clear all previous results
   for (DataPoint dp : allFlights) {
-    if (dp.date.equals(date)) { // Match flight date to selected date
+    if ((isCancelled && dp.cancelled == 1) || (!isCancelled && dp.cancelled == 0)) { // Match flight date to selected date
       flightsForDate.add(dp); // Add flight to List
     }
   }
-  selectedDate = date;
-  showFlightScreen = true; // Switch to flight deatils screen
-  scrollOffset = 0; // Reset scrolloffset when new data loaded
+
+  showFlightScreen = true;
+  scrollOffset = 0;
 }
-
-
-
-
-
-
