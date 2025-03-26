@@ -1,0 +1,33 @@
+void loadFlightData(String file) {
+  Table table = loadTable(file, "header");
+
+  for (TableRow row : table.rows()) {
+    // Extract data from the row using the CSV column names
+    String date = row.getString("FL_DATE");
+    String carrier = row.getString("MKT_CARRIER");
+    int carrierNumber = row.getInt("MKT_CARRIER_FL_NUM");
+    String origin = row.getString("ORIGIN");
+    String originCity = row.getString("ORIGIN_CITY_NAME");
+    String originState = row.getString("ORIGIN_STATE_ABR");
+    int originWac = row.getInt("ORIGIN_WAC");
+    String dest = row.getString("DEST");
+    String destCity = row.getString("DEST_CITY_NAME");
+    String destState = row.getString("DEST_STATE_ABR");
+    int destWac = row.getInt("DEST_WAC");
+    int crsDepTime = row.getInt("CRS_DEP_TIME");
+    int depTime = row.getInt("DEP_TIME");
+    int crsArrTime = row.getInt("CRS_ARR_TIME");
+    int arrTime = row.getInt("ARR_TIME");
+    int cancelled = row.getInt("CANCELLED");
+    int diverted = row.getInt("DIVERTED");
+    int distance = row.getInt("DISTANCE");
+
+    // Create a DataPoint object and add it to allFlights
+    DataPoint flight = new DataPoint(
+      date, carrier, carrierNumber, origin, originCity, originState, originWac,
+      dest, destCity, destState, destWac, crsDepTime, depTime, crsArrTime,
+      arrTime, cancelled, diverted, distance
+      );
+    allFlights.add(flight);
+  }
+}
