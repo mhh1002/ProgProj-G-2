@@ -4,37 +4,47 @@ class Widget {
   int event;
   color widgetColor, labelColor, lineColor;
   PFont widgetFont;
+  final int GAP_FOR_X = 15;
+  final int GAP_FOR_Y = 10;
+  final int EVENT_NULL = 0;
+
   Widget(int x, int y, int width, int height, String label,
     color widgetColor, PFont widgetFont, int event) {
-    this.x=x;
-    this.y=y;
+    this.x = x ;
+    this.y = y;
     this.width = width;
-    this.height= height;
-    this.label=label;
-    this.event=event;
-    this.widgetColor=widgetColor;
-    this.widgetFont=widgetFont;
-    labelColor= color(0);
+    this.height = height;
+    this.label = label;
+    this.event = event;
+    this.widgetColor = widgetColor;
+    this.widgetFont = widgetFont;
+    labelColor = color(0, 100, 100);
     lineColor = color(0);
   }
+
+  void setLabelColor(color colour) {
+    labelColor = colour;
+  }
+
   void draw() {
     fill(widgetColor);
     stroke(lineColor);
     rect(x, y, width, height);
     fill(labelColor);
     textFont(widgetFont);
-    text(label, x+GAP, y+height-GAP);
+    text(label, x + GAP_FOR_X, y + height - GAP_FOR_Y);
   }
 
   void mouseOver() {
     lineColor = color(255);
   }
+
   void mouseNotOver() {
     lineColor = color(0);
   }
 
   int getEvent(int mX, int mY) {
-    if (mX>x && mX < x+width && mY >y && mY <y+height) {
+    if (mX > x && mX < x + width && mY > y && mY < y + height) {
       return event;
     }
     return EVENT_NULL;
