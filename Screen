@@ -1,41 +1,104 @@
-class Screen {
-  ArrayList<Widget> widgets;
+
+class MainScreen
+{
+  String label1, label2, label3, label4;
+  int event;
+  ArrayList<Widget> widgets = new ArrayList<Widget>();
   color backgroundColor;
-  
-  Screen(color bgColor) {
-    this.backgroundColor = bgColor;
-    this.widgets = new ArrayList<Widget>();
+  color widgetColor;
+  MainScreen(String label1, String label2, String label3, String label4,
+    color widgetColor, color backgroundColor)
+  {
+    this.label1 = label1;
+    this.label2 = label2;
+    this.label3 = label3;
+    this.label4 = label4;
+    this.widgetColor = widgetColor;
+    this.backgroundColor = backgroundColor;
+    this.addWidget();
   }
-  
-  void addWidget(Widget w) {
-    widgets.add(w);
-  }
-  
-  void draw() {
-    background(backgroundColor);
-    for (Widget w : widgets) {
-      w.draw();
-    }
-  }
-  
-  int getEvent(int mouseX, int mouseY) {
-    for (Widget w : widgets) {
-      int event = w.getEvent(mouseX, mouseY);
-      if (event != EVENT_NULL) {
+  int getEvent(int mX, int mY)
+  {
+    for (Widget w : widgets)
+    {
+      event = w.getEvent(mX, mY);
+      if (event != EVENT_NULL)
         return event;
-      }
     }
     return EVENT_NULL;
   }
+  void addWidget()
+  {
+    widgets.add (new Widget(325, 230, 350, 40, label1,
+      widgetColor, labelFont, DATE_RANGE));
+    widgets.add (new Widget(325, 300, 350, 40, label2,
+      widgetColor, labelFont, ORIGIN_CITY));
+    widgets.add (new Widget(325, 370, 350, 40, label3,
+      widgetColor, labelFont, ARRIVAL_CITY));
+    widgets.add (new Widget(325, 440, 350, 40, label4,
+      widgetColor, labelFont, CAN_DEL_LAT));
+  }
+  void draw(color mouseHoverColor)
+  {
+    background(backgroundColor);
+    fill(0);
+    textFont(labelFont);
+    text("Search by:", 325, 200);
+    for (Widget w : widgets)
+    {
+      w.draw();
+      w.changeColor(mouseX, mouseY, mouseHoverColor);
+    }
+  }
 }
 
-void displayFlights() {
-  fill(0);
-  textFont(stdFont);
-  textSize(18);  // Set text size
-  int y = 100;
-  for (int i = 0; i < flights.size(); i++) { 
-    text(flights.get(i).toString(), 50, y);
-    y += 25;
+
+class Screen
+{
+  String screenName;
+  int Xpos;
+  float Ypos;
+  color labelColor;
+  color backgroundColor;
+  float scrollY = 0;
+  float maxScroll; //adjust according to your need for your screen
+  Widget w = new Widget(900, 20, 68, 40, "back", labelColor, labelFont, BACK);
+  
+  
+  Screen(String screenName, int Xpos, float Ypos,
+    color labelColor, color backgroundColor, float maxScroll)
+  {
+    this.screenName = screenName;
+    this.Xpos = Xpos;
+    this.Ypos = Ypos;
+    this.labelColor = labelColor;
+    this.backgroundColor = backgroundColor;
+    this.maxScroll = maxScroll;
+  }
+  
+    void drawScreenName() {
+    fill(0); 
+    textFont(stdFont);
+    text(screenName, Xpos, Ypos + scrollY); // Draw the screen name considering the scrollY for vertical positioning
+  }
+  
+  void scroll(float amount)
+  {
+    scrollY -= amount * 20;
+    scrollY = constrain(scrollY, maxScroll, 0);
+  }
+  void draw(color mouseHoverColor)
+  {
+    pushMatrix();
+    translate(0, scrollY);
+    background(backgroundColor);
+    
+      drawScreenName();
+
+    
+    w.draw();
+    w.changeColor(mouseX, mouseY, mouseHoverColor);
+    
+    popMatrix();
   }
 }

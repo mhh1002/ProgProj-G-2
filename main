@@ -1,140 +1,200 @@
 import java.util.*;
 
 PFont stdFont;
-ArrayList<Flight> flights = new ArrayList<>();
-ArrayList<Flight> filteredFlights = new ArrayList<>();
+PFont labelFont;
+final int DATE_RANGE = 1;
+final int ORIGIN_CITY = 2;
+final int ARRIVAL_CITY = 3;
+final int CAN_DEL_LAT = 4;
+final int BACK = 5;
+final int EVENT_NULL = 0;
+final int GAP = 13;
+
+boolean mainScreenOn = true;
 boolean showFlights = false;
 String searchQuery = "";
 boolean searchByOrigin = false;
 boolean searchByArrival = false;
 boolean inputError = false;
 
-Screen mainScreen, originSearchScreen, arrivalSearchScreen, currentScreen;
-final int EVENT_ORIGIN_SEARCH = 3;
-final int EVENT_ARRIVAL_SEARCH = 4;
-final int EVENT_SEARCH = 5;
-final int EVENT_BACK = 2;
-final int EVENT_NULL = 0;
-final int GAP = 10;
+ArrayList<Flight> flights = new ArrayList<>();
+ArrayList<Flight> filteredFlights = new ArrayList<>();
+
+Widget widget1, widget2, widget3, widget4;
+MainScreen myMainScreen;
+Screen dateRangeScr, originCityScr, arrivalCityScr, canDelLatScr;
+Screen currentScreen;
 color event_Color;
+float scrollY = 0;
+
+
+int searchButtonX = 280;
+int searchButtonY = 180;
+int searchButtonW = 80;
+int searchButtonH = 40;
 
 void setup() {
-    size(1000, 800);
-    stdFont = loadFont("AgencyFB-Bold-20.vlw");
-    textFont(stdFont);
-    
-    mainScreen = new Screen(color(255));
-    originSearchScreen = new Screen(color(255));
-    arrivalSearchScreen = new Screen(color(255));
-    
-    Widget widget1 = new Widget(50, 50, 180, 40, "Print data", color(200, 0, 0), stdFont, EVENT_ORIGIN_SEARCH);
-    Widget widget2 = new Widget(900, 50, 100, 40, "Back", color(0, 200, 0), stdFont, EVENT_BACK);
-    
-    mainScreen.addWidget(widget1);
-    
-    Widget originSearchButton = new Widget(50, 100, 250, 40, "Search by Origin", color(0, 0, 200), stdFont, EVENT_ORIGIN_SEARCH);
-    Widget arrivalSearchButton = new Widget(50, 160, 250, 40, "Search by Arrival", color(200, 100, 0), stdFont, EVENT_ARRIVAL_SEARCH);
-    
-    mainScreen.addWidget(originSearchButton);
-    mainScreen.addWidget(arrivalSearchButton);
-    
-    Widget searchButton = new Widget(400, 200, 150, 40, "Search", color(0, 200, 0), stdFont, EVENT_SEARCH);
-    
-    originSearchScreen.addWidget(searchButton);
-    originSearchScreen.addWidget(widget2);
-    arrivalSearchScreen.addWidget(searchButton);
-    arrivalSearchScreen.addWidget(widget2);
-    
-    currentScreen = mainScreen;
-    readData();
+  size(1000, 700);
+
+  color labelColor = color(0, 10, 97);
+  stdFont = loadFont("AlNile-40.vlw");
+  labelFont = loadFont("FZLTXHB--B51-0-20.vlw");
+
+  myMainScreen = new MainScreen("Given date range", "Origin city",
+    "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
+
+  dateRangeScr = new Screen("Given date range screen", 280, 80, labelColor, 230, -1600);
+  originCityScr = new Screen("Origin city screen", 350, 80, labelColor, 230, -1600);
+  arrivalCityScr = new Screen("Arrival city screen", 330, 80, labelColor, 230, -1600);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late flights screen", 180, 80, labelColor, 230, -1600);
+  mainScreenOn = true;
+  readData();
 }
 
 void draw() {
-    currentScreen.draw();
-    if (currentScreen == originSearchScreen || currentScreen == arrivalSearchScreen) {
-        drawSearchBox();
-        displayFilteredFlights();
-        if (inputError) {
-            displayWarning();
-        }
+  if (!mainScreenOn) {
+    if (currentScreen != null) {
+      currentScreen.draw(color(0, 41, 224));
     }
+
+    if (currentScreen == originCityScr || currentScreen == arrivalCityScr) {
+      drawSearchBox();
+      drawSearchButton();
+      displayFilteredFlights();
+
+      if (inputError) {
+        displayWarning();
+      }
+    }
+  } else {
+    myMainScreen.draw(color(0, 41, 224));
+  }
 }
 
 void drawSearchBox() {
-    fill(255);
-    rect(50, 200, 300, 40);
+  fill(255);
+  rect(30, 180 + scrollY, 240, 40); // Apply scrollY to search box Y position
+  fill(0);
+  textSize(15);
+  if (searchQuery.isEmpty()) {
+    fill(150);
+    text("Enter city full name to search", 40, 205 + scrollY); // Apply scrollY to text position
+  } else {
     fill(0);
-    if (searchQuery.isEmpty()) {
-        fill(150);
-        text("Enter city or abbreviation...", 60, 230);
-    } else {
-        fill(0);
-        text(searchQuery, 60, 230);
-    }
+    text(searchQuery, 40, 205 + scrollY); // Apply scrollY to text position
+  }
+}
+
+void drawSearchButton() {
+  fill(0, 102, 204);
+  rect(searchButtonX, searchButtonY + scrollY, searchButtonW, searchButtonH, 10); // Apply scrollY to button position
+  fill(255);
+  textSize(16);
+  text("Search", searchButtonX + 15, searchButtonY + 25 + scrollY); // Apply scrollY to text position
 }
 
 void displayFilteredFlights() {
-    fill(0);
-    textSize(18);
-    int y = 300;
-    if (!filteredFlights.isEmpty()) {
-        text("Total Flights: " + filteredFlights.size(), 50, y);
-        y += 25;
-    }
-    for (Flight flight : filteredFlights) {
-        text(flight.toString(), 50, y);
-        y += 25;
-    }
+  float y = 240 + scrollY;
+  fill(0);
+  textSize(12);
+
+  if (!filteredFlights.isEmpty()) {
+    text("Total Flights: " + filteredFlights.size(), 30, y);
+    y += 20; // Spacing
+  }
+
+  for (Flight flight : filteredFlights) {
+    text(flight.toString(), 30, y);
+    y += 20;
+  }
 }
+
 
 void displayWarning() {
-    fill(255, 0, 0);
-    textSize(18);
-    text("Invalid input. Please enter a valid city abbreviation or full name.", 50, 280);
+  fill(255, 0, 0);
+  textSize(14);
+  text("Invalid input. Please enter a valid city abbreviation or full name.", 30, 220 + scrollY); // Apply scrollY to warning
 }
 
+void mouseWheel(MouseEvent event) {
+  if (!mainScreenOn && currentScreen != null) {
+    // Scroll content by adjusting scrollY based on mouse wheel movement
+    scrollY += event.getCount() * 10;  // Adjust 10 to control the scroll speed
+    scrollY = constrain(scrollY, -1000, 1000);  // Constrain scrollY within a reasonable range
+  }
+}
 
 void mousePressed() {
-    int event = currentScreen.getEvent(mouseX, mouseY);
-    switch (event) {
-        case EVENT_ORIGIN_SEARCH:
-            searchQuery = "";
-            searchByOrigin = true;
-            searchByArrival = false;
-            filteredFlights.clear();
-            inputError = false;
-            currentScreen = originSearchScreen;
-            break;
-        case EVENT_ARRIVAL_SEARCH:
-            searchQuery = "";
-            searchByOrigin = false;
-            searchByArrival = true;
-            filteredFlights.clear();
-            inputError = false;
-            currentScreen = arrivalSearchScreen;
-            break;
-        case EVENT_SEARCH:
-            searchFlights();
-            break;
-        case EVENT_BACK:
-            searchQuery = "";
-            searchByOrigin = false;
-            searchByArrival = false;
-            filteredFlights.clear();
-            inputError = false;
-            currentScreen = mainScreen;
-            break;
+  int event = myMainScreen.getEvent(mouseX, mouseY);
+
+  // Handle search button click
+  if (mouseX > searchButtonX && mouseX < searchButtonX + searchButtonW &&
+    mouseY > searchButtonY && mouseY < searchButtonY + searchButtonH) {
+    searchFlights();
+  }
+
+  switch (event) {
+  case DATE_RANGE:
+    resetSearch();
+    mainScreenOn = false;
+    currentScreen = dateRangeScr;
+    break;
+
+  case ORIGIN_CITY:
+    resetSearch();
+    searchByOrigin = true;
+    searchByArrival = false;
+    mainScreenOn = false;
+    currentScreen = originCityScr;
+    break;
+
+  case ARRIVAL_CITY:
+    resetSearch();
+    searchByOrigin = false;
+    searchByArrival = true;
+    mainScreenOn = false;
+    currentScreen = arrivalCityScr;
+    break;
+
+  case CAN_DEL_LAT:
+    resetSearch();
+    mainScreenOn = false;
+    currentScreen = canDelLatScr;
+    break;
+
+  default:
+    if (currentScreen != null) {
+      event = currentScreen.w.getEvent(mouseX, mouseY);
+      if (event == BACK) {
+        resetSearch();
+        mainScreenOn = true;
+        currentScreen = null;
+      }
     }
+    break;
+  }
 }
 
 void keyPressed() {
-    if (key == BACKSPACE && searchQuery.length() > 0) {
-        searchQuery = searchQuery.substring(0, searchQuery.length() - 1);
-    } else if (key == ENTER) {
-        searchFlights();
-    } else if (key != CODED) {
-        searchQuery += key;
-    }
+  if (key == BACKSPACE && searchQuery.length() > 0) {
+    searchQuery = searchQuery.substring(0, searchQuery.length() - 1);
+  } else if (key == ENTER) {
+    searchFlights();
+    printUserInput();
+  } else if (key != CODED) {
+    searchQuery += key;
+  }
 }
 
+void resetSearch() {
+  searchQuery = "";
+  searchByOrigin = false;
+  searchByArrival = false;
+  showFlights = false;
+  filteredFlights.clear();
+  inputError = false;
+}
 
+void printUserInput() {
+  println("User input: " + searchQuery);
+}

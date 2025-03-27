@@ -6,30 +6,40 @@ void searchFlights() {
         inputError = true;
         return;
     }
-    
+
+    // Iterate over the flights to find matching ones based on the search criteria
     for (Flight f : flights) {
-        if (searchByOrigin && (f.originAbb.equalsIgnoreCase(searchQuery) || f.originCity.toLowerCase().contains(searchQuery.toLowerCase()))) {
-            filteredFlights.add(f);
-        } else if (searchByArrival && (f.destAbb.equalsIgnoreCase(searchQuery) || f.destCity.toLowerCase().contains(searchQuery.toLowerCase()))) {
-            filteredFlights.add(f);
+        if (searchByOrigin) {
+            if ( f.originCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+                filteredFlights.add(f);
+            }
+        }
+        else if (searchByArrival) {
+            if ( f.destCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+                filteredFlights.add(f);
+            }
         }
     }
-    
 }
+
 
 boolean validateInput() {
     boolean found = false;
+    
     for (Flight f : flights) {
+        String searchQueryTrimmed = searchQuery.trim().toLowerCase();
+        
         if (searchByOrigin) {
-            if (f.originAbb.equalsIgnoreCase(searchQuery.trim()) || f.originCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+            if ( f.originCity.toLowerCase().contains(searchQueryTrimmed)) {
                 found = true;
             }
-        } else if (searchByArrival) {
-            if (f.destAbb.equalsIgnoreCase(searchQuery.trim()) || f.destCity.toLowerCase().contains(searchQuery.trim().toLowerCase())) {
+        }
+        else if (searchByArrival) {
+            if ( f.destCity.toLowerCase().contains(searchQueryTrimmed)) {
                 found = true;
             }
         }
     }
-
-    return found;
+    
+    return found; 
 }
