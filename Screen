@@ -79,7 +79,7 @@ class Screen
     void drawScreenName() {
     fill(0); 
     textFont(stdFont);
-    text(screenName, Xpos, Ypos + scrollY); // Draw the screen name considering the scrollY for vertical positioning
+    text(screenName, Xpos, Ypos - scrollY); // Draw the screen name considering the scrollY for vertical positioning
   }
   
   void scroll(float amount)

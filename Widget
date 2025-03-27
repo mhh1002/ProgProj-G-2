@@ -45,4 +45,3 @@ class Widget
     return EVENT_NULL;
   }
 }
-

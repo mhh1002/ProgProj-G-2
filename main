@@ -73,28 +73,28 @@ void draw() {
 
 void drawSearchBox() {
   fill(255);
-  rect(30, 180 + scrollY, 240, 40); // Apply scrollY to search box Y position
+  rect(30, 180 - scrollY, 240, 40); // Apply scrollY to search box Y position
   fill(0);
   textSize(15);
   if (searchQuery.isEmpty()) {
     fill(150);
-    text("Enter city full name to search", 40, 205 + scrollY); // Apply scrollY to text position
+    text("Enter city full name to search", 40, 205 - scrollY); // Apply scrollY to text position
   } else {
     fill(0);
-    text(searchQuery, 40, 205 + scrollY); // Apply scrollY to text position
+    text(searchQuery, 40, 205 - scrollY); // Apply scrollY to text position
   }
 }
 
 void drawSearchButton() {
   fill(0, 102, 204);
-  rect(searchButtonX, searchButtonY + scrollY, searchButtonW, searchButtonH, 10); // Apply scrollY to button position
+  rect(searchButtonX, searchButtonY - scrollY, searchButtonW, searchButtonH, 10); // Apply scrollY to button position
   fill(255);
   textSize(16);
-  text("Search", searchButtonX + 15, searchButtonY + 25 + scrollY); // Apply scrollY to text position
+  text("Search", searchButtonX + 15, searchButtonY + 25 - scrollY); // Apply scrollY to text position
 }
 
 void displayFilteredFlights() {
-  float y = 240 + scrollY;
+  float y = 240 - scrollY;
   fill(0);
   textSize(12);
 
