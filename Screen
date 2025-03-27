@@ -1,4 +1,3 @@
-
 class MainScreen
 {
   String label1, label2, label3, label4;
@@ -63,8 +62,8 @@ class Screen
   float scrollY = 0;
   float maxScroll; //adjust according to your need for your screen
   Widget w = new Widget(900, 20, 68, 40, "back", labelColor, labelFont, BACK);
-  
-  
+
+
   Screen(String screenName, int Xpos, float Ypos,
     color labelColor, color backgroundColor, float maxScroll)
   {
@@ -75,13 +74,14 @@ class Screen
     this.backgroundColor = backgroundColor;
     this.maxScroll = maxScroll;
   }
-  
-    void drawScreenName() {
-    fill(0); 
+
+  void drawScreenName()
+  {
+    fill(0);
     textFont(stdFont);
-    text(screenName, Xpos, Ypos - scrollY); // Draw the screen name considering the scrollY for vertical positioning
+    text(screenName, Xpos, Ypos); // Draw the screen name considering the scrollY for vertical positioning
   }
-  
+
   void scroll(float amount)
   {
     scrollY -= amount * 20;
@@ -92,13 +92,13 @@ class Screen
     pushMatrix();
     translate(0, scrollY);
     background(backgroundColor);
-    
-      drawScreenName();
 
-    
+    drawScreenName();
+
+
     w.draw();
     w.changeColor(mouseX, mouseY, mouseHoverColor);
-    
+
     popMatrix();
   }
 }
