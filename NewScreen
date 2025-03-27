@@ -1,0 +1,34 @@
+class Screen {
+  ArrayList<Widget> widgets;  // List of widgets
+  color backgroundColor;      // Background color of the screen
+
+  // Constructor to set background color
+  Screen(color bgColor) {
+    this.backgroundColor = bgColor;
+    this.widgets = new ArrayList<Widget>(); // Initialize widgets array
+  }
+
+  // Add widget to the screen
+  void addWidget(Widget w) {
+    widgets.add(w);
+  }
+
+  // Draw the screen (background + widgets)
+  void draw() {
+    background(backgroundColor);
+    for (Widget w : widgets) {
+      w.draw();  // Draw each widget
+    }
+  }
+
+  // Handle widget events (clicks)
+  int getEvent(int mouseX, int mouseY) {
+    for (Widget w : widgets) {
+      int event = w.getEvent(mouseX, mouseY);
+      if (event != EVENT_NULL) {
+        return event;  // Return the event if a widget is clicked
+      }
+    }
+    return EVENT_NULL;  // Return null event if no widget is clicked
+  }
+}
