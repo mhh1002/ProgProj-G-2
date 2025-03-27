@@ -1,5 +1,5 @@
 void readData() {
-    String[] data = loadStrings("flights_full.csv");
+    String[] data = loadStrings("flights2k.csv");
     for (int i = 1; i < data.length; i++) {  // Skip header row
         String[] parts = split(data[i], ",");
         if (parts.length >= 18) {  // Ensure we have enough columns
@@ -15,8 +15,8 @@ void readData() {
             int originWAC = parseInt(parts[6].trim());
 
             String dest = parts[7].trim();  
-            String destCity = parts[8].split(",")[0].trim();
-            String destAbb = parts[9].trim();
+            String destAbb = parts[8].split(",")[0].trim();
+            String destCity = parts[9].trim();
 
             int destWAC = parseInt(parts[10].trim());
 
