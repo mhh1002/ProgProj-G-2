@@ -23,7 +23,7 @@ void setup() {
   //loadFlightData("flights_full.csv"); // Load all the flights in allFlights
   readData("flights_full.csv");
   countCancelledFlights();
-  
+
 
   // Initialise back button
   PFont buttonFont = createFont("Arial", 16);
