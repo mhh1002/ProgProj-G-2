@@ -1,0 +1,48 @@
+class Flight {
+    String flightDate, carrier, flightNumber, origin, originCity, originAbb, dest, destCity, destAbb;
+    int originWAC, destWAC, crsDepTime, depTime, crsArrTime, arrTime, distance;
+    boolean cancelled, diverted;
+
+    Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String originAbb, 
+           int originWAC, String dest, String destCity, String destAbb, int destWAC, 
+           int crsDepTime, int depTime, int crsArrTime, int arrTime, boolean cancelled, boolean diverted, int distance) {
+        this.flightDate = flightDate;
+        this.carrier = carrier;
+        this.flightNumber = flightNumber;
+        this.origin = origin;
+        this.originCity = originCity;
+        this.originAbb = originAbb;
+        this.originWAC = originWAC;
+        this.dest = dest;
+        this.destCity = destCity;
+        this.destAbb = destAbb;
+        this.destWAC = destWAC;
+        this.crsDepTime = crsDepTime;
+        this.depTime = depTime;
+        this.crsArrTime = crsArrTime;
+        this.arrTime = arrTime;
+        this.cancelled = cancelled;
+        this.diverted = diverted;
+        this.distance = distance;
+    }
+
+    public String toString() {
+        return flightDate + " | " + carrier + flightNumber + " | Origin City: " + originCity + " (" + originAbb + ") to destination: " + destCity + " (" + destAbb + ")" +
+               " | Dep: " + (depTime == -1 ? "N/A" : depTime) +
+               " | Arr: " + (arrTime == -1 ? "N/A" : arrTime) +
+               " | Distance: " + distance + " miles" +
+               " | " + (cancelled ? "CANCELLED" : "On Time") +
+               " | " + (diverted ? "DIVERTED" : "Normal");
+    }
+    
+      String getDisplayString() {
+    if (cancelled) {
+      return "Cancellation: " + flightNumber + " from " + origin + " to " + dest + ", Scheduled at: " +
+        crsDepTime + " - " + crsArrTime + ", Distance: " + distance + " km";
+    } else {
+      return "Delay or Diverted: " + flightNumber + " from " + origin + " to " + dest + ", Departed at: " + depTime +
+        " (Delay for: " + (depTime - crsDepTime) + " mins), Arrived at: " + arrTime +
+        " (Delay for: " + (arrTime - crsArrTime) + " mins), Distance: " + distance + " km" + (diverted ? ", Diverted" : "");
+    }
+  }
+}
