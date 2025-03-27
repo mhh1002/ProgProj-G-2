@@ -22,14 +22,13 @@ ArrayList<Flight> filteredFlights = new ArrayList<>();
 
 Widget widget1, widget2, widget3, widget4;
 MainScreen myMainScreen;
-Screen dateRangeScr, originCityScr, arrivalCityScr, canDelLatScr;
+Screen monthlyFlightScr, originCityScr, arrivalCityScr, canDelLatScr;
 Screen currentScreen;
 color event_Color;
-float scrollY = 0;
 
 
 int searchButtonX = 280;
-int searchButtonY = 180;
+int searchButtonY = 120;
 int searchButtonW = 80;
 int searchButtonH = 40;
 
@@ -40,20 +39,21 @@ void setup() {
   stdFont = loadFont("AlNile-40.vlw");
   labelFont = loadFont("FZLTXHB--B51-0-20.vlw");
 
-  myMainScreen = new MainScreen("Given date range", "Origin city",
+  myMainScreen = new MainScreen("Monthly flights", "Origin city",
     "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
 
-  dateRangeScr = new Screen("Given date range screen", 280, 80, labelColor, 230, -1600);
-  originCityScr = new Screen("Origin city screen", 350, 80, labelColor, 230, -1600);
-  arrivalCityScr = new Screen("Arrival city screen", 330, 80, labelColor, 230, -1600);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late flights screen", 180, 80, labelColor, 230, -1600);
+  monthlyFlightScr = new Screen("Monthly Flights Search", 280, 70, labelColor, 230, -1600);
+  originCityScr = new Screen("Origin City Search", 350, 70, labelColor, 230, -1600);
+  arrivalCityScr = new Screen("Arrival City Search", 330, 70, labelColor, 230, -1600);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 180, 70, labelColor, 230, -1600);
   mainScreenOn = true;
   readData();
 }
 
 void draw() {
   if (!mainScreenOn) {
-    if (currentScreen != null) {
+    if (currentScreen != null)
+    {
       currentScreen.draw(color(0, 41, 224));
     }
 
@@ -73,28 +73,28 @@ void draw() {
 
 void drawSearchBox() {
   fill(255);
-  rect(30, 180 - scrollY, 240, 40); // Apply scrollY to search box Y position
+  rect(30, 120 + currentScreen.scrollY, 240, 40); // Apply currentScreen.scrollY to search box Y position
   fill(0);
   textSize(15);
   if (searchQuery.isEmpty()) {
     fill(150);
-    text("Enter city full name to search", 40, 205 - scrollY); // Apply scrollY to text position
+    text("Enter city full name to search", 40, 145 + currentScreen.scrollY); // Apply currentScreen.scrollY to text position
   } else {
     fill(0);
-    text(searchQuery, 40, 205 - scrollY); // Apply scrollY to text position
+    text(searchQuery, 40, 145 + currentScreen.scrollY); // Apply currentScreen.scrollY to text position
   }
 }
 
 void drawSearchButton() {
   fill(0, 102, 204);
-  rect(searchButtonX, searchButtonY - scrollY, searchButtonW, searchButtonH, 10); // Apply scrollY to button position
+  rect(searchButtonX, searchButtonY + currentScreen.scrollY, searchButtonW, searchButtonH, 10); // Apply currentScreen.scrollY to button position
   fill(255);
   textSize(16);
-  text("Search", searchButtonX + 15, searchButtonY + 25 - scrollY); // Apply scrollY to text position
+  text("Search", searchButtonX + 15, searchButtonY + 25 + currentScreen.scrollY); // Apply currentScreen.scrollY to text position
 }
 
 void displayFilteredFlights() {
-  float y = 240 - scrollY;
+  float y = 210 + currentScreen.scrollY;
   fill(0);
   textSize(12);
 
@@ -113,14 +113,13 @@ void displayFilteredFlights() {
 void displayWarning() {
   fill(255, 0, 0);
   textSize(14);
-  text("Invalid input. Please enter a valid city abbreviation or full name.", 30, 220 + scrollY); // Apply scrollY to warning
+  text("Invalid input. Please enter a valid city abbreviation or full name.", 30, 220 + currentScreen.scrollY); // Apply currentScreen.scrollY to warning
 }
 
 void mouseWheel(MouseEvent event) {
   if (!mainScreenOn && currentScreen != null) {
-    // Scroll content by adjusting scrollY based on mouse wheel movement
-    scrollY += event.getCount() * 10;  // Adjust 10 to control the scroll speed
-    scrollY = constrain(scrollY, -1000, 1000);  // Constrain scrollY within a reasonable range
+    // Scroll content by adjusting currentScreen.scrollY based on mouse wheel movement
+    currentScreen.scroll(event.getCount());
   }
 }
 
@@ -149,7 +148,7 @@ void mousePressed() {
   case DATE_RANGE:
     resetSearch();
     mainScreenOn = false;
-    currentScreen = dateRangeScr;
+    currentScreen = monthlyFlightScr;
     break;
 
   case ORIGIN_CITY:
