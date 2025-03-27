@@ -1,7 +1,7 @@
 import processing.data.Table; //<>// //<>//
 // List to store flights for selected daate
-ArrayList<DataPoint> flightsForDate;
-ArrayList<DataPoint> allFlights = new ArrayList<DataPoint>();
+ArrayList<Flight> flightsForDate;
+ArrayList<Flight> flights = new ArrayList<Flight>();
 
 // Variables for scrolling
 int initial_y = 60;
@@ -18,13 +18,15 @@ String selectedDate = "";
 Widget backButton;
 
 void setup() {
-  size(1000, 400);
-  flightsForDate = new ArrayList<DataPoint>();
-  loadFlightData("flights_full.csv"); // Load all the flights in allFlights
+  size(1000, 700);
+  flightsForDate = new ArrayList<Flight>();
+  //loadFlightData("flights_full.csv"); // Load all the flights in allFlights
+  readData("flights_full.csv");
   countCancelledFlights();
+  
 
   // Initialise back button
-  PFont buttonFont = createFont("Arail", 16);
+  PFont buttonFont = createFont("Arial", 16);
   backButton = new Widget(10, 10, 80, 30, "BACK", color(30, 100, 90), buttonFont, 1);
   backButton.setLabelColor(color(255));
 }
@@ -46,44 +48,11 @@ void draw() {
   }
 }
 
-// Add each flight with detail to allFlights
-void loadFlightData(String file) {
-  Table table = loadTable(file, "header");
 
-  for (TableRow row : table.rows()) {
-    // Extract data from the row using the CSV column names
-    String date = row.getString("FL_DATE");
-    String carrier = row.getString("MKT_CARRIER");
-    int carrierNumber = row.getInt("MKT_CARRIER_FL_NUM");
-    String origin = row.getString("ORIGIN");
-    String originCity = row.getString("ORIGIN_CITY_NAME");
-    String originState = row.getString("ORIGIN_STATE_ABR");
-    int originWac = row.getInt("ORIGIN_WAC");
-    String dest = row.getString("DEST");
-    String destCity = row.getString("DEST_CITY_NAME");
-    String destState = row.getString("DEST_STATE_ABR");
-    int destWac = row.getInt("DEST_WAC");
-    int crsDepTime = row.getInt("CRS_DEP_TIME");
-    int depTime = row.getInt("DEP_TIME");
-    int crsArrTime = row.getInt("CRS_ARR_TIME");
-    int arrTime = row.getInt("ARR_TIME");
-    int cancelled = row.getInt("CANCELLED");
-    int diverted = row.getInt("DIVERTED");
-    int distance = row.getInt("DISTANCE");
-
-    // Create a DataPoint object and add it to allFlights
-    DataPoint flight = new DataPoint(
-      date, carrier, carrierNumber, origin, originCity, originState, originWac,
-      dest, destCity, destState, destWac, crsDepTime, depTime, crsArrTime,
-      arrTime, cancelled, diverted, distance
-      );
-    allFlights.add(flight);
-  }
-}
 
 void countCancelledFlights() {
-  for (DataPoint flight : allFlights) {
-    if (flight.cancelled == 1) {
+  for (Flight flight : flights) {
+    if (flight.cancelled) {
       cancelledCount++;
     } else {
       notCancelledCount++;
@@ -124,7 +93,7 @@ void displayFlights() {
   int y = initial_y - scrollOffset; // intial y position
 
   for (int i = 0; i < flightsForDate.size(); i++) {
-    DataPoint dp = flightsForDate.get(i);
+    Flight dp = flightsForDate.get(i);
 
     if (y > 30 && y < height - 30) {
       String flightInfo = dp.getDisplayString();
@@ -168,8 +137,8 @@ void mousePressed() {
 // Call this function when bar is clicked
 void onBarClick(boolean isCancelled) {
   flightsForDate.clear(); // Clear all previous results
-  for (DataPoint dp : allFlights) {
-    if ((isCancelled && dp.cancelled == 1) || (!isCancelled && dp.cancelled == 0)) { // Match flight date to selected date
+  for (Flight dp : flights) {
+    if ((isCancelled && dp.cancelled) || (!isCancelled && !dp.cancelled)) { // Match flight date to selected date
       flightsForDate.add(dp); // Add flight to List
     }
   }
