@@ -43,8 +43,8 @@ void setup() {
     "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
 
   monthlyFlightScr = new Screen("Monthly Flights Search", 280, 70, labelColor, 230, -1600);
-  originCityScr = new Screen("Origin City Search", 350, 70, labelColor, 230, -1600);
-  arrivalCityScr = new Screen("Arrival City Search", 330, 70, labelColor, 230, -1600);
+  originCityScr = new Screen("Origin City Search", 350, 70, labelColor, 230, -9000);
+  arrivalCityScr = new Screen("Arrival City Search", 330, 70, labelColor, 230, -9000);
   canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 180, 70, labelColor, 230, -1600);
   mainScreenOn = true;
   readData();
