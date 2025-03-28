@@ -1,0 +1,266 @@
+import java.util.*;
+import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
+
+PFont stdFont;
+PFont labelFont;
+final int SORT_ASC = 6; //
+final int SORT_DESC = 7;//
+final int SORT_AZ = 8;//
+final int SORT_ZA = 9;//
+final int DATE_RANGE = 1;
+final int ORIGIN_CITY = 2;
+final int ARRIVAL_CITY = 3;
+final int CAN_DEL_LAT = 4;
+final int BACK = 5;
+final int EVENT_NULL = 0;
+final int GAP = 13;
+
+boolean mainScreenOn = true;
+boolean showFlights = false;
+String searchQuery = "";
+boolean searchByOrigin = false;
+boolean searchByArrival = false;
+boolean inputError = false;
+boolean sortAscending = true;
+Boolean currentSortAZ = null;  // （true=A-Z，false=Z-A）
+
+ArrayList<Flight> flights = new ArrayList<>();
+ArrayList<Flight> filteredFlights = new ArrayList<>();
+
+Widget widget1, widget2, widget3, widget4;
+MainScreen myMainScreen;
+Screen dateRangeScr, originCityScr, arrivalCityScr, canDelLatScr;
+Screen currentScreen;
+color event_Color;
+float scrollY = 0;
+
+
+int searchButtonX = 280;
+int searchButtonY = 180;
+int searchButtonW = 80;
+int searchButtonH = 40;
+
+
+Widget sortAscBtn, sortDescBtn; // in class screen
+ Widget citySortAZBtn, citySortZABtn;// in class screen
+
+// in function  Screen(String screenName, int Xpos, float Ypos, color labelColor, color backgroundColor, float maxScroll)
+
+Screen(String screenName, int Xpos, float Ypos,
+    color labelColor, color backgroundColor, float maxScroll)
+  {
+    this.screenName = screenName;
+    this.Xpos = Xpos;
+    this.Ypos = Ypos;
+    this.labelColor = labelColor;
+    this.backgroundColor = backgroundColor;
+    this.maxScroll = maxScroll;
+    this.sortAscBtn = new Widget(700, 180, 120, 40, "Sort ASC", 
+              color(200), labelFont, SORT_ASC); //
+    this.sortDescBtn = new Widget(830, 180, 120, 40, "Sort DESC", 
+               color(200), labelFont, SORT_DESC);//
+    this.citySortAZBtn = new Widget(700, 230, 150, 40, "", 
+                   color(200), labelFont, SORT_AZ);//
+    this.citySortZABtn = new Widget(860, 230, 150, 40, "", 
+                   color(200), labelFont, SORT_ZA);//
+  }
+
+// inScreen draw()
+  void draw(color mouseHoverColor)
+  {
+    String sortTarget = searchByOrigin ? "Dest" : "Origin";//
+    citySortAZBtn.label = "Sort "+sortTarget+" A-Z";//
+    citySortZABtn.label = "Sort "+sortTarget+" Z-A";//
+    pushMatrix();
+    translate(0, scrollY);
+    background(backgroundColor);    
+      drawScreenName();    
+    w.draw();
+    w.changeColor(mouseX, mouseY, mouseHoverColor);    
+    popMatrix();
+    sortAscBtn.draw();///
+    sortAscBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    sortDescBtn.draw();///
+    sortDescBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    citySortAZBtn.draw();
+    citySortAZBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    citySortZABtn.draw();
+    citySortZABtn.changeColor(mouseX, mouseY, mouseHoverColor);
+  }
+
+// class Screen
+ int getSortEvent(int mX, int mY) {
+  int event = sortAscBtn.getEvent(mX, mY);
+  if(event != EVENT_NULL) return event; 
+  event = sortDescBtn.getEvent(mX, mY);
+  if(event != EVENT_NULL) return event;
+  event = citySortAZBtn.getEvent(mX, mY);
+  if(event != EVENT_NULL) return event; 
+  event = citySortZABtn.getEvent(mX, mY);
+  return event;
+  }
+
+
+// in void mousePressed
+
+if(currentScreen != null && !mainScreenOn) {
+  int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
+  if(sortEvent == SORT_ASC) {
+    sortFlights(true);
+  } else if(sortEvent == SORT_DESC) {
+    sortFlights(false);
+  }
+}
+
+update void mousePressed:
+void mousePressed() {
+  int event = -1;
+  if (mainScreenOn) {
+    event = myMainScreen.getEvent(mouseX, mouseY);
+  } else {
+    if (currentScreen != null && currentScreen.w != null) {
+      event = currentScreen.w.getEvent(mouseX, mouseY);
+    }
+  }
+
+  // Handling search button clicks
+  if (mouseX > searchButtonX && mouseX < searchButtonX + searchButtonW &&
+      mouseY > searchButtonY && mouseY < searchButtonY + searchButtonH) {
+    searchFlights();
+  }
+
+  // Home screen menu option handling
+  switch (event) {
+    case DATE_RANGE:
+      resetSearch();
+      mainScreenOn = false;
+      currentScreen = dateRangeScr;
+      break;
+
+    case ORIGIN_CITY:
+      resetSearch();
+      searchByOrigin = true;
+      searchByArrival = false;
+      mainScreenOn = false;
+      currentScreen = originCityScr;
+      break;
+
+    case ARRIVAL_CITY:
+      resetSearch();
+      searchByOrigin = false;
+      searchByArrival = true;
+      mainScreenOn = false;
+      currentScreen = arrivalCityScr;
+      break;
+
+    case CAN_DEL_LAT:
+      resetSearch();
+      mainScreenOn = false;
+      currentScreen = canDelLatScr;
+      break;
+
+    default:
+      if (currentScreen != null && !mainScreenOn) {
+        event = currentScreen.w.getEvent(mouseX, mouseY);
+        if (event == BACK) {
+          resetSearch();
+          mainScreenOn = true;
+          currentScreen = null;
+        }
+      }
+      break;
+  }
+
+  // Handling Sort Button Clicks
+  if (currentScreen != null && !mainScreenOn) {
+    int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
+    
+    switch(sortEvent) {
+      case SORT_ASC:   // date order asc
+        sortFlights(true, false);
+        sortAscending = true;
+        break;
+
+      case SORT_DESC:  // Date reverse order
+        sortFlights(false, false);
+        sortAscending = false;
+        break;
+
+      case SORT_AZ:    //  city A-Z
+        sortFlights(true, true);
+        currentSortAZ = true;
+        break;
+
+      case SORT_ZA:    // city Z-A
+        sortFlights(false, true);
+        currentSortAZ = false;
+        break;
+    }
+  }
+}
+//viod update in main:
+void sortFlights(boolean ascending, boolean isCitySort) {
+  Collections.sort(filteredFlights, new Comparator<Flight>() {
+    public int compare(Flight f1, Flight f2) {
+      if (isCitySort) {
+        // City ordering logic
+        String str1, str2;
+        if (searchByOrigin) {
+          // Sort by destination city when searching for departure city
+          str1 = f1.destCity.toLowerCase();
+          str2 = f2.destCity.toLowerCase();
+        } else {
+          // When searching for arrival cities, sort by departure city
+          str1 = f1.originCity.toLowerCase();
+          str2 = f2.originCity.toLowerCase();
+        }
+        return ascending ? str1.compareTo(str2) : str2.compareTo(str1);
+      } else {
+        // Date Sorting Logic
+        Date date1 = parseDate(f1.flightDate);
+        Date date2 = parseDate(f2.flightDate);
+        return ascending ? date1.compareTo(date2) : date2.compareTo(date1);
+      }
+    }
+  });
+}
+
+Date parseDate(String dateStr) {
+  try {
+    // 1/1/2022 12:00:00 AM
+    String[] dateParts = split(dateStr, ' ');
+    String[] mdy = split(dateParts[0], '/');
+    int month = int(mdy[0])-1; 
+    int day = int(mdy[1]);
+    int year = int(mdy[2]);
+    return new Date(year-1900, month, day);
+  } catch(Exception e) {
+    return new Date(0);
+  }
+}
+void printUserInput() {
+  println("User input: " + searchQuery);
+}
+
+//update displayFilteredFlights in main
+
+void displayFilteredFlights() {
+  float y = 240 - scrollY;
+  fill(0);
+  textSize(12);
+
+  if (!filteredFlights.isEmpty()) {
+    text("Sorted by date: " + (sortAscending ? "ASC" : "DESC"), 30, y);
+    y += 20; 
+
+    text("Total Flights: " + filteredFlights.size(), 30, y);
+    y += 20; // Spacing
+  }
+
+  for (Flight flight : filteredFlights) {
+    text(flight.toString(), 30, y);
+    y += 20;
+  }
+}
