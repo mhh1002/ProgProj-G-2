@@ -1,0 +1,83 @@
+class Flight {
+  String flightDate, carrier, flightNumber, origin, originCity, originAbb, dest, destCity, destAbb;
+  int originWAC, destWAC, crsDepTime, depTime, crsArrTime, arrTime, distance;
+  boolean cancelled, diverted;
+
+  Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String originAbb,
+    int originWAC, String dest, String destCity, String destAbb, int destWAC,
+    int crsDepTime, int depTime, int crsArrTime, int arrTime, boolean cancelled, boolean diverted, int distance) {
+    this.flightDate = flightDate;
+    this.carrier = carrier;
+    this.flightNumber = flightNumber;
+    this.origin = origin;
+    this.originCity = originCity;
+    this.originAbb = originAbb;
+    this.originWAC = originWAC;
+    this.dest = dest;
+    this.destCity = destCity;
+    this.destAbb = destAbb;
+    this.destWAC = destWAC;
+    this.crsDepTime = crsDepTime;
+    this.depTime = depTime;
+    this.crsArrTime = crsArrTime;
+    this.arrTime = arrTime;
+    this.cancelled = cancelled;
+    this.diverted = diverted;
+    this.distance = distance;
+  }
+
+  @Override
+    public String toString() {
+    return flightDate + " | " + carrier + flightNumber + " | Origin City: " + originCity + " (" + originAbb + ") to destination: " + destCity + " (" + destAbb + ")" +
+      " | Dep: " + (depTime == -1 ? "N/A" : depTime) +
+      " | Arr: " + (arrTime == -1 ? "N/A" : arrTime) +
+      " | Distance: " + distance + " miles" +
+      " | " + (cancelled ? "CANCELLED" : "On Time") +
+      " | " + (diverted ? "DIVERTED" : "Normal");
+  }
+
+  String getDisplayString() {
+    if (cancelled) {
+      return "Cancellation: " + flightNumber + " from " + origin + " to " + dest + ", Scheduled at: " +
+        crsDepTime + " - " + crsArrTime + ", Distance: " + distance + " km";
+    } else {
+      return "Delay or Diverted: " + flightNumber + " from " + origin + " to " + dest + ", Departed at: " + depTime +
+        " (Delay for: " + (depTime - crsDepTime) + " mins), Arrived at: " + arrTime +
+        " (Delay for: " + (arrTime - crsArrTime) + " mins), Distance: " + distance + " km" + (diverted ? ", Diverted" : "");
+    }
+  }
+}
+
+// Add each flight with detail to allFlights
+void readData(String file) {
+  Table table = loadTable(file, "header");
+
+  for (TableRow row : table.rows()) {
+    // Extract data from the row using the CSV column names
+    String flightDate = row.getString("FL_DATE");
+    String carrier = row.getString("MKT_CARRIER");
+    int carrierNumber = row.getInt("MKT_CARRIER_FL_NUM");
+    String flightNumber = carrier + carrierNumber;
+    String origin = row.getString("ORIGIN");
+    String originCity = row.getString("ORIGIN_CITY_NAME");
+    String originAbb = row.getString("ORIGIN_STATE_ABR");
+    int originWAC = row.getInt("ORIGIN_WAC");
+    String dest = row.getString("DEST");
+    String destCity = row.getString("DEST_CITY_NAME");
+    String destAbb = row.getString("DEST_STATE_ABR");
+    int destWAC = row.getInt("DEST_WAC");
+    int crsDepTime = row.getInt("CRS_DEP_TIME");
+    int depTime = row.getInt("DEP_TIME");
+    int crsArrTime = row.getInt("CRS_ARR_TIME");
+    int arrTime = row.getInt("ARR_TIME");
+    boolean cancelled = row.getInt("CANCELLED") == 1?true:false;
+    boolean diverted = row.getInt("DIVERTED") == 1?true:false;
+    int distance = row.getInt("DISTANCE");
+
+    // Create a DataPoint object and add it to allFlights
+    Flight flight = new Flight(flightDate, carrier, flightNumber, origin, originCity, originAbb, originWAC,
+      dest, destCity, destAbb, destWAC, crsDepTime, depTime, crsArrTime, arrTime,
+      cancelled, diverted, distance);
+    flights.add(flight);
+  }
+}
