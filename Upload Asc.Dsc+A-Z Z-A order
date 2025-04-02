@@ -57,13 +57,13 @@ Screen(String screenName, int Xpos, float Ypos,
     this.labelColor = labelColor;
     this.backgroundColor = backgroundColor;
     this.maxScroll = maxScroll;
-    this.sortAscBtn = new Widget(700, 180, 120, 40, "Sort ASC", 
+    this.sortAscBtn = new Widget(700, 180, 120, 40, "Sort ASC", //
               color(200), labelFont, SORT_ASC); //
-    this.sortDescBtn = new Widget(830, 180, 120, 40, "Sort DESC", 
+    this.sortDescBtn = new Widget(830, 180, 120, 40, "Sort DESC", //
                color(200), labelFont, SORT_DESC);//
-    this.citySortAZBtn = new Widget(700, 230, 150, 40, "", 
+    this.citySortAZBtn = new Widget(700, 230, 150, 40, "", //
                    color(200), labelFont, SORT_AZ);//
-    this.citySortZABtn = new Widget(860, 230, 150, 40, "", 
+    this.citySortZABtn = new Widget(860, 230, 150, 40, "", //
                    color(200), labelFont, SORT_ZA);//
   }
 
@@ -81,25 +81,25 @@ Screen(String screenName, int Xpos, float Ypos,
     w.changeColor(mouseX, mouseY, mouseHoverColor);    
     popMatrix();
     sortAscBtn.draw();///
-    sortAscBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    sortAscBtn.changeColor(mouseX, mouseY, mouseHoverColor);//
     sortDescBtn.draw();///
-    sortDescBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    sortDescBtn.changeColor(mouseX, mouseY, mouseHoverColor);//
     citySortAZBtn.draw();
-    citySortAZBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    citySortAZBtn.changeColor(mouseX, mouseY, mouseHoverColor);//
     citySortZABtn.draw();
-    citySortZABtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    citySortZABtn.changeColor(mouseX, mouseY, mouseHoverColor);//
   }
 
 // class Screen
- int getSortEvent(int mX, int mY) {
-  int event = sortAscBtn.getEvent(mX, mY);
-  if(event != EVENT_NULL) return event; 
-  event = sortDescBtn.getEvent(mX, mY);
-  if(event != EVENT_NULL) return event;
-  event = citySortAZBtn.getEvent(mX, mY);
-  if(event != EVENT_NULL) return event; 
-  event = citySortZABtn.getEvent(mX, mY);
-  return event;
+ int getSortEvent(int mX, int mY) {       //
+  int event = sortAscBtn.getEvent(mX, mY); //
+  if(event != EVENT_NULL) return event; //
+  event = sortDescBtn.getEvent(mX, mY);//
+  if(event != EVENT_NULL) return event;//
+  event = citySortAZBtn.getEvent(mX, mY);//
+  if(event != EVENT_NULL) return event; //
+  event = citySortZABtn.getEvent(mX, mY);//
+  return event;//
   }
 
 
@@ -107,10 +107,10 @@ Screen(String screenName, int Xpos, float Ypos,
 
 if(currentScreen != null && !mainScreenOn) {
   int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
-  if(sortEvent == SORT_ASC) {
-    sortFlights(true);
-  } else if(sortEvent == SORT_DESC) {
-    sortFlights(false);
+  if(sortEvent == SORT_ASC) { //
+    sortFlights(true); //
+  } else if(sortEvent == SORT_DESC) {//
+    sortFlights(false); //
   }
 }
 
@@ -226,7 +226,7 @@ void sortFlights(boolean ascending, boolean isCitySort) {
     }
   });
 }
-
+//
 Date parseDate(String dateStr) {
   try {
     // 1/1/2022 12:00:00 AM
@@ -239,7 +239,7 @@ Date parseDate(String dateStr) {
   } catch(Exception e) {
     return new Date(0);
   }
-}
+}//
 void printUserInput() {
   println("User input: " + searchQuery);
 }
@@ -251,16 +251,16 @@ void displayFilteredFlights() {
   fill(0);
   textSize(12);
 
-  if (!filteredFlights.isEmpty()) {
-    text("Sorted by date: " + (sortAscending ? "ASC" : "DESC"), 30, y);
-    y += 20; 
+  if (!filteredFlights.isEmpty()) {  //
+    text("Sorted by date: " + (sortAscending ? "ASC" : "DESC"), 30, y);//
+    y += 20; //
 
-    text("Total Flights: " + filteredFlights.size(), 30, y);
-    y += 20; // Spacing
+    text("Total Flights: " + filteredFlights.size(), 30, y);//
+    y += 20; // Spacing//
   }
 
-  for (Flight flight : filteredFlights) {
-    text(flight.toString(), 30, y);
+  for (Flight flight : filteredFlights) {  //
+    text(flight.toString(), 30, y);//
     y += 20;
-  }
+  }//
 }
