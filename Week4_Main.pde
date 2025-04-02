@@ -1,5 +1,8 @@
 import java.util.*;
 import processing.data.Table;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 PFont stdFont;
 PFont labelFont;
@@ -13,6 +16,13 @@ final int CAN_DEL_DETAILS = 6;
 final int EVENT_NULL = 0;
 final int GAP = 15;
 
+final int SORT_ASC = 7;    
+final int SORT_DESC = 8; 
+final int SORT_AZ = 9;    
+final int SORT_ZA = 10;  
+final int SORT_TYPE_DATE = 0;
+final int SORT_TYPE_CITY = 1;
+
 final int initial_y2 = 220;
 final int initial_y = 60;
 final int initial_x = 10;
@@ -25,6 +35,10 @@ float notCancelledHeight;
 float cancelledHeight;
 boolean showFlightScreen = false; // Switch between bar chart and flight details screen
 String selectedDate = "";
+
+boolean sortAscending = true;    // 
+boolean currentSortAZ = true;    // 
+int currentSortType = -1;        // 
 
 boolean mainScreenOn = true;
 boolean showFlights = false;
@@ -177,6 +191,17 @@ void displayFilteredFlights() {
   textFont(flightInfoFont);
   textSize(14.8);
   textAlign(LEFT, 60);
+   String sortStatus = "";
+  if(!filteredFlights.isEmpty()) {
+    sortStatus += "Sorted by: ";
+    if(currentSortType == 0) {
+      sortStatus += "Date " + (sortAscending ? "ASC" : "DESC");
+    } else {
+      String cityType = searchByOrigin ? "Destination" : "Origin";
+      sortStatus += cityType + " " + (currentSortAZ ? "A-Z" : "Z-A");
+    }
+    text(sortStatus, initial_x, 170);
+  }
 
   int y = initial_y2 - currentScreen.scrollY;
 
