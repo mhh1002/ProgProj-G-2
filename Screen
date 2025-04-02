@@ -63,6 +63,7 @@ class Screen {
   color backgroundColor;
   int scrollY, maxScroll;
   Widget backButton = new Widget(1200, 20, 68, 40, "back", labelColor, labelFont, BACK);
+  Widget sortAscBtn, sortDescBtn, sortAzBtn, sortZaBtn;
 
 
   Screen(String screenName, int Xpos, float Ypos,
@@ -74,6 +75,15 @@ class Screen {
     this.backgroundColor = backgroundColor;
     this.scrollY = 0;
     this.maxScroll = maxScroll;
+    
+    this.sortAscBtn = new Widget(1000, 120, 120, 30, "Date ASC", 
+                   color(200), labelFont, SORT_ASC);
+    this.sortDescBtn = new Widget(1130, 120, 120, 30, "Date DESC", 
+                    color(200), labelFont, SORT_DESC);
+    this.sortAzBtn = new Widget(1000, 160, 120, 30, "", 
+                   color(200), labelFont, SORT_AZ);
+    this.sortZaBtn = new Widget(1130, 160, 120, 30, "", 
+                    color(200), labelFont, SORT_ZA);
   }
 
 
@@ -81,14 +91,36 @@ class Screen {
     fill(0);
     textFont(stdFont);
     textAlign(LEFT, TOP);
-    text(screenName, Xpos, Ypos); // Draw the screen name considering the scrollY for vertical positioning
+    text(screenName, Xpos, Ypos); // Draw the screen name considering the scrollY for vertical positioning    
   }
-
+  int getSortEvent(int mX, int mY) {
+    int event;
+    // 
+    if((event = sortAscBtn.getEvent(mX, mY)) != EVENT_NULL) return event;
+    if((event = sortDescBtn.getEvent(mX, mY)) != EVENT_NULL) return event;
+    // 
+    if((event = sortAzBtn.getEvent(mX, mY)) != EVENT_NULL) return event;
+    if((event = sortZaBtn.getEvent(mX, mY)) != EVENT_NULL) return event;
+    return EVENT_NULL;
+  }
 
   void draw(color mouseHoverColor) {
     background(backgroundColor);
-
     drawScreenName();
+    String cityType = searchByOrigin ? "Dest" : "Origin";
+    sortAzBtn.label = cityType + " A-Z";
+    sortZaBtn.label = cityType + " Z-A";
+    sortAscBtn.draw();
+    sortAscBtn.changeColor(mouseX, mouseY, mouseHoverColor); 
+    sortDescBtn.draw();
+    sortDescBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    sortAzBtn.draw();
+    sortAzBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+    sortZaBtn.draw();
+    sortZaBtn.changeColor(mouseX, mouseY, mouseHoverColor);
+
+    backButton.draw();
+    backButton.changeColor(mouseX, mouseY, mouseHoverColor);
 
     if (!mainScreenOn && currentScreen.backButton != null) {
       backButton.draw();

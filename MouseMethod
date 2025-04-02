@@ -16,6 +16,32 @@ void mouseWheel(MouseEvent event) {
 
 
 void mousePressed() {
+  if(currentScreen != null && !mainScreenOn) {
+    int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
+    
+    switch(sortEvent) {
+ case SORT_ASC:   // 
+    sortFlights(true, false);
+    currentSortType = SORT_TYPE_DATE;  // Marks the current date as sorted
+    sortAscending = true;
+    break;
+  case SORT_DESC:  // 
+    sortFlights(false, false);
+    currentSortType = SORT_TYPE_DATE;  // Marks the current date as sorted
+    sortAscending = false;
+    break;
+  case SORT_AZ:    // 
+    sortFlights(true, true);
+    currentSortType = SORT_TYPE_CITY;  // 
+    currentSortAZ = true;
+    break;
+  case SORT_ZA:    // 
+    sortFlights(false, true);
+    currentSortType = SORT_TYPE_CITY;  // 
+    currentSortAZ = false;
+    break;
+    }
+  }
   int event = -1;
   if (mainScreenOn) {
     event = myMainScreen.getEvent(mouseX, mouseY);
@@ -117,5 +143,41 @@ void mousePressed() {
     }
 
     break;
+  }
+}
+void sortFlights(boolean ascending, boolean isCitySort) {
+  Collections.sort(filteredFlights, new Comparator<Flight>() {
+    public int compare(Flight f1, Flight f2) {
+      if(isCitySort) {      
+        String str1, str2;
+        if(searchByOrigin) {
+          str1 = f1.destCity.toLowerCase();
+          str2 = f2.destCity.toLowerCase();
+        } else {
+          // 
+          str1 = f1.originCity.toLowerCase();
+          str2 = f2.originCity.toLowerCase();
+        }
+        return ascending ? str1.compareTo(str2) : str2.compareTo(str1);
+      } else {
+        // 
+        Date date1 = parseDate(f1.flightDate);
+        Date date2 = parseDate(f2.flightDate);
+        return ascending ? date1.compareTo(date2) : date2.compareTo(date1);
+      }
+    }
+  });
+}
+
+Date parseDate(String dateStr) {
+  try {
+    String[] parts = split(dateStr, ' ');
+    String[] mdy = split(parts[0], '/');
+    int month = int(mdy[0])-1; // 
+    int day = int(mdy[1]);
+    int year = int(mdy[2]);
+    return new Date(year-1900, month, day);
+  } catch(Exception e) {
+    return new Date(0); //
   }
 }
