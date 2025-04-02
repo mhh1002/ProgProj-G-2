@@ -39,7 +39,7 @@ String selectedDate = "";
 boolean sortAscending = true;    // 
 boolean currentSortAZ = true;    // 
 int currentSortType = -1;        // 
-
+//
 boolean mainScreenOn = true;
 boolean showFlights = false;
 String searchQuery = "";
