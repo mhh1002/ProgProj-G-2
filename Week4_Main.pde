@@ -39,7 +39,7 @@ String selectedDate = "";
 boolean sortAscending = true;    // 
 boolean currentSortAZ = true;    // 
 int currentSortType = -1;        // 
-//
+
 boolean mainScreenOn = true;
 boolean showFlights = false;
 String searchQuery = "";
@@ -76,11 +76,11 @@ void setup() {
   myMainScreen = new MainScreen("Monthly flights", "Origin city",
     "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
 
-  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600);
-  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000);
-  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0);
-  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000);
+  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600,false);
+  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000,true);
+  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000,true);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0,false);
+  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000,false);
   mainScreenOn = true;
 
   readData("flights_full.csv");
