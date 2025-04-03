@@ -101,16 +101,20 @@ void draw() {
     if (currentScreen != null) {
       currentScreen.draw(color(0, 41, 224));
     }
-      background(240);
-  
-  if (flightInfoScreen) {
-    drawFlightInfoScreen();
-  } else {
-    drawBarChartForMonthlyFlights();
-    drawChartTitle();
-    drawBackButton();
-  }
+    background(240);
 
+    if (flightInfoScreen) {
+      drawFlightInfoScreen();
+    } else {
+      // Check if the current screen is the monthly chart screen
+      if (currentScreen == monthlyFlightScr) {
+        drawBarChartForMonthlyFlights();  // Only draw when on the monthlyFlightScr screen
+      }
+      drawChartTitle();
+      drawBackButton();
+    }
+
+    // Handle other screens as per current functionality
     if (currentScreen == originCityScr || currentScreen == arrivalCityScr) {
       drawSearchBox();
       drawSearchButton();
@@ -121,7 +125,7 @@ void draw() {
       }
     } else if (currentScreen == canDelLatScr) {
       currentScreen.scrollY = 0;
-      drawBarChart();
+      drawBarChart(); // Possibly another chart or content
     } else if (currentScreen == canDelFlights) {
       displayFlights();
     }
