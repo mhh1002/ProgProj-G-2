@@ -78,6 +78,7 @@ void setup() {
   size(1300, 750);
 
   planeIcon = loadImage("planeIcon.png");
+  bgImage = loadImage("planephoto1.jpg");
 
   color labelColor = color(0, 10, 97);
   stdFont = loadFont("AlNile-40.vlw");
@@ -89,14 +90,14 @@ void setup() {
   readData("flights_full.csv");
 
   myMainScreen = new MainScreen("Monthly flights", "Origin city",
-    "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
+    "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230, bgImage);
 
-  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 45, labelColor, 230, -1600, false);
-  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000, true);
-  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000, true);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0, false);
-  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000, false);
-  dailyFlightsInfo = new Screen("Flight Details for Day ", 10, 5, labelColor, 230, -9000, false);
+  monthlyFlightScr = new Screen("Monthly Flights Search", 30, 55, labelColor, 230, -1600, false, bgImage);
+  originCityScr = new Screen("Origin City Search", 30, 55, labelColor, 230, -9000, true, bgImage);
+  arrivalCityScr = new Screen("Arrival City Search", 30, 55, labelColor, 230, -9000, true, bgImage);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 30, 25, labelColor, 230, 0, false, bgImage);
+  canDelFlights = new Screen("Flights Info", 9, 25, labelColor, 230, -9000, false, bgImage);
+  dailyFlightsInfo = new Screen("Flight Details for Day ", 9, 25, labelColor, 230, -9000, false, bgImage);
   mainScreenOn = true;
 
 
@@ -137,7 +138,7 @@ void draw() {
 
 
 void displayFlights() {
-  fill(100, 93, 170);
+  fill(255);
   textFont(flightInfoFont);
   textSize(14.8);
   int y = initial_y - currentScreen.scrollY; // intial y position
@@ -163,10 +164,10 @@ void drawSearchBox() {
   textSize(15);
   if (searchQuery.isEmpty()) {
     fill(150);
-    text("Enter city full name to search", 40, 145); // Apply currentScreen.scrollY to text position
+    text("Enter city full name to search", 40, 135); // Apply currentScreen.scrollY to text position
   } else {
     fill(0);
-    text(searchQuery, 40, 145); // Apply currentScreen.scrollY to text position
+    text(searchQuery, 40, 135); // Apply currentScreen.scrollY to text position
   }
 }
 
@@ -177,6 +178,10 @@ void drawSearchButton() {
   if (mouseX > searchButtonX && mouseX < searchButtonX + searchButtonW && mouseY > searchButtonY
     && mouseY < searchButtonY + searchButtonH) {
     fill(color(0, 41, 224));
+    rect(searchButtonX, searchButtonY, searchButtonW, searchButtonH, 10); // Apply currentScreen.scrollY to button position
+    fill(255);
+    textSize(16);
+    text("Search", searchButtonX + 15, searchButtonY + 15);// Apply currentScreen.scrollY to text position
   } else {
     fill(color(0, 10, 97));
     rect(searchButtonX, searchButtonY, searchButtonW, searchButtonH, 10); // Apply currentScreen.scrollY to button position
@@ -200,7 +205,7 @@ void displayFilteredFlights() {
 
 
 
-  text("Total Flights: " + filteredFlights.size(), initial_x, 190);
+  text("Total Flights: " + filteredFlights.size(), 30, 190);
 
   for (int i = 0; i < filteredFlights.size(); i++) {
     Flight flight = filteredFlights.get(i);
