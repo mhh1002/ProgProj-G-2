@@ -8,6 +8,7 @@ PFont stdFont;
 PFont labelFont;
 PFont flightInfoFont;
 PImage planeIcon;
+PImage bgImage;
 final int DATE_RANGE = 1;
 final int ORIGIN_CITY = 2;
 final int ARRIVAL_CITY = 3;
@@ -68,6 +69,7 @@ void setup() {
   size(1300, 750);
 
   planeIcon = loadImage("planeIcon.png");
+  bgImage = loadImage("planephoto1.jpg");
 
   color labelColor = color(0, 10, 97);
   stdFont = loadFont("AlNile-40.vlw");
@@ -77,13 +79,14 @@ void setup() {
   flightsForDate = new ArrayList<Flight>();
 
   myMainScreen = new MainScreen("Monthly flights", "Origin city",
-    "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
+    "Arrival city", "Cancelled/Delayed/Late flights", labelColor,
+    230, bgImage);
 
-  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600,false);
-  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000,true);
-  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000,true);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0,false);
-  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000,false);
+  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600, false, bgImage);
+  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000, true, bgImage);
+  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000, true, bgImage);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0, false, bgImage);
+  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000, false, bgImage);
   mainScreenOn = true;
 
   readData("flights_full.csv");
