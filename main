@@ -148,10 +148,10 @@ void drawSearchBox() {
   textSize(15);
   if (searchQuery.isEmpty()) {
     fill(150);
-    text("Enter city full name to search", 40, 145); // Apply currentScreen.scrollY to text position
+    text("Enter city full name to search", 40, 135); // Apply currentScreen.scrollY to text position
   } else {
     fill(0);
-    text(searchQuery, 40, 145); // Apply currentScreen.scrollY to text position
+    text(searchQuery, 40, 135); // Apply currentScreen.scrollY to text position
   }
 }
 
@@ -160,9 +160,16 @@ void drawSearchButton() {
   fill(color(0, 10, 97));
 
   if (mouseX > searchButtonX && mouseX < searchButtonX + searchButtonW && mouseY > searchButtonY
-    && mouseY < searchButtonY + searchButtonH) {
+    && mouseY < searchButtonY + searchButtonH)
+  {
     fill(color(0, 41, 224));
-  } else {
+    rect(searchButtonX, searchButtonY, searchButtonW, searchButtonH, 10); // Apply currentScreen.scrollY to button position
+    fill(255);
+    textSize(16);
+    text("Search", searchButtonX + 15, searchButtonY + 15);// Apply currentScreen.scrollY to text position
+  }
+  else
+  {
     fill(color(0, 10, 97));
     rect(searchButtonX, searchButtonY, searchButtonW, searchButtonH, 10); // Apply currentScreen.scrollY to button position
     fill(255);
@@ -185,7 +192,7 @@ void displayFilteredFlights() {
 
 
 
-  text("Total Flights: " + filteredFlights.size(), initial_x, 190);
+  text("Total Flights: " + filteredFlights.size(), 30, 190);
 
   for (int i = 0; i < filteredFlights.size(); i++) {
     Flight flight = filteredFlights.get(i);
