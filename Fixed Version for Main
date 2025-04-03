@@ -8,6 +8,7 @@ PFont stdFont;
 PFont labelFont;
 PFont flightInfoFont;
 PImage planeIcon;
+PImage bgImage;
 final int DATE_RANGE = 1;
 final int ORIGIN_CITY = 2;
 final int ARRIVAL_CITY = 3;
