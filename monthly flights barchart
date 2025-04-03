@@ -1,0 +1,116 @@
+import processing.data.Table;
+import processing.data.TableRow;
+import java.util.ArrayList;
+
+ArrayList<String> flightData = new ArrayList<String>();
+boolean flightInfoScreen = false;
+int selectedBarIndexOne = -1;
+int margin = 50;
+int[] flightsPerDay;
+PFont font;
+
+
+void loadFlightData() {
+  Table table = loadTable("flights_full.csv", "header");
+  if (table == null) {
+    println("Error: Could not load the CSV file");
+    return;
+  }
+  
+  for (TableRow row : table.rows()) {
+    try {
+      String date = row.getString(0);
+      String[] dateParts = split(date, ' ')[0].split("/");
+      int day = int(dateParts[1]);
+      
+      if (day >= 1 && day <= 31) {
+        flightsPerDay[day-1]++;
+      }
+    } catch (Exception e) {
+      println("Skipping row: " + e);
+    }
+  }
+}
+
+void drawFlightInfoScreen() {
+  background(245);
+  
+  // Header
+  fill(50);
+  textSize(24);
+  textAlign(CENTER);
+  text("Flight Details for Day " + (selectedBarIndexOne + 1), width/2, 50);
+  
+  // Back button
+  drawBackButton();
+  
+  // Flight list container
+  fill(255);
+  stroke(200);
+  rect(50, 100, width - 100, height - 150, 10);
+  
+  // Flight details
+  fill(60);
+  textSize(12);
+  textAlign(LEFT);
+  
+  int yPos = 130;
+  int lineHeight = 20;
+  
+  // Column headers
+  fill(0);
+  textSize(14);
+  String headers = "Date/Time,Airline,Flight#,Origin,City,State,Dest,City,State,Dep,Arr,DepDelay,ArrDelay,Cancelled,Diverted,Distance";
+  text(headers, 70, yPos);
+  yPos += lineHeight + 10;
+  
+  // Flight data
+  textSize(12);
+  for (String flight : flightData) {
+    if (flight.startsWith("Error") || flight.startsWith("No flights")) {
+      text(flight, 70, yPos);
+      yPos += lineHeight;
+    } else {
+      text(flight, 70, yPos);
+      yPos += lineHeight;
+    }
+    
+    if (yPos > height - 50) break;
+  }
+}
+
+void drawBarChartForMonthlyFlights() {
+  int barWidth = (width - 2 * margin) / 31;
+  int chartHeight = height - 2 * margin - 50;
+  
+  stroke(0);
+  line(margin, margin + 50, margin, height - margin);
+  line(margin, height - margin, width - margin, height - margin);
+  
+  int maxFlights = max(flightsPerDay);
+  if (maxFlights == 0) maxFlights = 1;
+  
+  for (int i = 0; i < 31; i++) {
+    float barHeight = map(flightsPerDay[i], 0, maxFlights, 0, chartHeight);
+    fill(0, 100, 255);
+    rect(margin + i * barWidth, height - margin - barHeight, barWidth, barHeight);
+    fill(0);
+    textAlign(CENTER);
+    text(i + 1, margin + i * barWidth + barWidth / 2, height - margin + 20);
+  }
+}
+
+void drawChartTitle() {
+  textAlign(CENTER);
+  textSize(18);
+  text("Number of Flights per Day", width / 2, margin / 2);
+}
+
+void drawBackButton() {
+  fill(70, 100, 220);
+  rect(width - 100, 20, 80, 40, 5);
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Back", width - 60, 40);
+}
