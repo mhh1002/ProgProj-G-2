@@ -85,8 +85,8 @@ void setup() {
   monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600, false, bgImage);
   originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000, true, bgImage);
   arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000, true, bgImage);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0, false, bgImage);
-  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000, false, bgImage);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 20, 25, labelColor, 230, 0, false, bgImage);
+  canDelFlights = new Screen("Flights Info", 20, 25, labelColor, 230, -9000, false, bgImage);
   mainScreenOn = true;
 
   readData("flights_full.csv");
@@ -112,7 +112,6 @@ void draw() {
       currentScreen.scrollY = 0;
       drawBarChart();
     } else if (currentScreen == canDelFlights) {
-
       displayFlights();
     }
   } else {
@@ -122,7 +121,7 @@ void draw() {
 
 
 void displayFlights() {
-  fill(100, 93, 170);
+  fill(255);
   textFont(flightInfoFont);
   textSize(14.8);
   int y = initial_y - currentScreen.scrollY; // intial y position
