@@ -16,32 +16,33 @@ void mouseWheel(MouseEvent event) {
 
 
 void mousePressed() {
-  if(currentScreen != null && !mainScreenOn) {
+  if (currentScreen != null && !mainScreenOn) {
+    // Handle sorting
     int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
-    
     switch(sortEvent) {
- case SORT_ASC:   // 
-    sortFlights(true, false);
-    currentSortType = SORT_TYPE_DATE;  // Marks the current date as sorted
-    sortAscending = true;
-    break;
-  case SORT_DESC:  // 
-    sortFlights(false, false);
-    currentSortType = SORT_TYPE_DATE;  // Marks the current date as sorted
-    sortAscending = false;
-    break;
-  case SORT_AZ:    // 
-    sortFlights(true, true);
-    currentSortType = SORT_TYPE_CITY;  // 
-    currentSortAZ = true;
-    break;
-  case SORT_ZA:    // 
-    sortFlights(false, true);
-    currentSortType = SORT_TYPE_CITY;  // 
-    currentSortAZ = false;
-    break;
+      case SORT_ASC:
+        sortFlights(true, false);
+        currentSortType = SORT_TYPE_DATE;
+        sortAscending = true;
+        break;
+      case SORT_DESC:
+        sortFlights(false, false);
+        currentSortType = SORT_TYPE_DATE;
+        sortAscending = false;
+        break;
+      case SORT_AZ:
+        sortFlights(true, true);
+        currentSortType = SORT_TYPE_CITY;
+        currentSortAZ = true;
+        break;
+      case SORT_ZA:
+        sortFlights(false, true);
+        currentSortType = SORT_TYPE_CITY;
+        currentSortAZ = false;
+        break;
     }
   }
+  
   int event = -1;
   if (mainScreenOn) {
     event = myMainScreen.getEvent(mouseX, mouseY);
@@ -64,11 +65,11 @@ void mousePressed() {
       if (mouseX > notCancelledBarX && mouseX < notCancelledBarX + barWidth &&
         mouseY > notCancelledBarTop && mouseY < notCancelledBarBtm) {
         onBarClick(false); // Show non-cancelled flights
-        return; // Exit to prevent other event processing
+        return;
       } else if (mouseX > cancelledBarX && mouseX < cancelledBarX + barWidth &&
         mouseY > cancelledBarTop && mouseY < cancelledBarBtm) {
         onBarClick(true); // Show cancelled flights
-        return; // Exit to prevent other event processing
+        return;
       }
     }
   }
@@ -81,70 +82,69 @@ void mousePressed() {
   }
 
   switch(event) {
-
-  case BACK:
-    resetSearch();
-    if (currentScreen == canDelFlights) {
-      mainScreenOn = false;
-      currentScreen = canDelLatScr;
-    } else {
-      mainScreenOn = true;
-      currentScreen = null;
-    }
-    break;
-
-  case DATE_RANGE:
-    resetSearch();
-    mainScreenOn = false;
-    currentScreen = monthlyFlightScr;
-    currentScreen.scrollY = 0;
-    break;
-
-  case ORIGIN_CITY:
-    resetSearch();
-    searchByOrigin = true;
-    searchByArrival = false;
-    mainScreenOn = false;
-    currentScreen = originCityScr;
-    currentScreen.scrollY = 0;
-    break;
-
-  case ARRIVAL_CITY:
-    resetSearch();
-    searchByOrigin = false;
-    searchByArrival = true;
-    mainScreenOn = false;
-    currentScreen = arrivalCityScr;
-    currentScreen.scrollY = 0;
-    break;
-
-  case CAN_DEL_LAT:
-    resetSearch();
-    mainScreenOn = false;
-    currentScreen = canDelLatScr;
-    currentScreen.scrollY = 0;
-    break;
-
-  case CAN_DEL_DETAILS:
-    resetSearch();
-    mainScreenOn = false;
-    currentScreen = canDelFlights;
-    currentScreen.scrollY = 0;
-    break;
-
-  default:
-    if (currentScreen != null && !mainScreenOn) {
-      event = currentScreen.backButton.getEvent(mouseX, mouseY);
-      if (event == BACK) {
-        resetSearch();
+    case BACK:
+      resetSearch();
+      if (currentScreen == canDelFlights) {
+        mainScreenOn = false;
+        currentScreen = canDelLatScr;
+      } else {
         mainScreenOn = true;
         currentScreen = null;
       }
-    }
+      break;
 
-    break;
+    case DATE_RANGE:
+      resetSearch();
+      mainScreenOn = false;
+      currentScreen = monthlyFlightScr; // This is where we set the screen for monthly chart
+      currentScreen.scrollY = 0;
+      break;
+
+    case ORIGIN_CITY:
+      resetSearch();
+      searchByOrigin = true;
+      searchByArrival = false;
+      mainScreenOn = false;
+      currentScreen = originCityScr;
+      currentScreen.scrollY = 0;
+      break;
+
+    case ARRIVAL_CITY:
+      resetSearch();
+      searchByOrigin = false;
+      searchByArrival = true;
+      mainScreenOn = false;
+      currentScreen = arrivalCityScr;
+      currentScreen.scrollY = 0;
+      break;
+
+    case CAN_DEL_LAT:
+      resetSearch();
+      mainScreenOn = false;
+      currentScreen = canDelLatScr;
+      currentScreen.scrollY = 0;
+      break;
+
+    case CAN_DEL_DETAILS:
+      resetSearch();
+      mainScreenOn = false;
+      currentScreen = canDelFlights;
+      currentScreen.scrollY = 0;
+      break;
+
+    default:
+      if (currentScreen != null && !mainScreenOn) {
+        event = currentScreen.backButton.getEvent(mouseX, mouseY);
+        if (event == BACK) {
+          resetSearch();
+          mainScreenOn = true;
+          currentScreen = null;
+        }
+      }
+      break;
   }
 }
+
 void sortFlights(boolean ascending, boolean isCitySort) {
   Collections.sort(filteredFlights, new Comparator<Flight>() {
     public int compare(Flight f1, Flight f2) {
