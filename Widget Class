@@ -22,7 +22,7 @@ class Widget {
 
   void draw() {
     pushStyle();
-    stroke(204, 102, 20);
+    stroke(0, 10, 97);
     fill(widgetColor);
     rect(x, y, width, height);
 
