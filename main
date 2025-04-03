@@ -17,10 +17,10 @@ final int CAN_DEL_DETAILS = 6;
 final int EVENT_NULL = 0;
 final int GAP = 15;
 
-final int SORT_ASC = 7;    
-final int SORT_DESC = 8; 
-final int SORT_AZ = 9;    
-final int SORT_ZA = 10;  
+final int SORT_ASC = 7;
+final int SORT_DESC = 8;
+final int SORT_AZ = 9;
+final int SORT_ZA = 10;
 final int SORT_TYPE_DATE = 0;
 final int SORT_TYPE_CITY = 1;
 
@@ -37,9 +37,9 @@ float cancelledHeight;
 boolean showFlightScreen = false; // Switch between bar chart and flight details screen
 String selectedDate = "";
 
-boolean sortAscending = true;    // 
-boolean currentSortAZ = true;    // 
-int currentSortType = -1;   
+boolean sortAscending = true;    //
+boolean currentSortAZ = true;    //
+int currentSortType = -1;
 
 boolean mainScreenOn = true;
 boolean showFlights = false;
@@ -66,7 +66,7 @@ int searchButtonH = 40;
 
 void setup() {
   size(1300, 750);
-  
+
   planeIcon = loadImage("planeIcon.png");
 
   color labelColor = color(0, 10, 97);
@@ -79,11 +79,11 @@ void setup() {
   myMainScreen = new MainScreen("Monthly flights", "Origin city",
     "Arrival city", "Cancelled/Delayed/Late flights", labelColor, 230);
 
-  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600);
-  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000);
-  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000);
-  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0);
-  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000);
+  monthlyFlightScr = new Screen("Monthly Flights Search", 20, 65, labelColor, 230, -1600,false);
+  originCityScr = new Screen("Origin City Search", 20, 65, labelColor, 230, -9000,true);
+  arrivalCityScr = new Screen("Arrival City Search", 20, 65, labelColor, 230, -9000,true);
+  canDelLatScr = new Screen("Cancelled/Delayed/Late Flights Search", 10, 20, labelColor, 230, 0,false);
+  canDelFlights = new Screen("Flights Info", 10, 5, labelColor, 230, -9000,false);
   mainScreenOn = true;
 
   readData("flights_full.csv");
@@ -177,14 +177,14 @@ void displayFilteredFlights() {
   textSize(14.8);
   textAlign(LEFT, 60);
   int centerX = (width - 550) / 2;
-  int centerBox = centerX + 225; 
+  int centerBox = centerX + 225;
   int y = initial_y2 - currentScreen.scrollY;
 
 
 
   text("Total Flights: " + filteredFlights.size(), initial_x, 190);
 
-for (int i = 0; i < filteredFlights.size(); i++) {
+  for (int i = 0; i < filteredFlights.size(); i++) {
     Flight flight = filteredFlights.get(i);
 
     int boxX = centerX;
@@ -210,16 +210,16 @@ for (int i = 0; i < filteredFlights.size(); i++) {
     textSize(16);
 
     // Display flight carrier
-    text(flight.flightNumber , boxX + 50, boxY + 20);
-    text(flight.fromattedDate , boxX + 350, boxY + 20);
+    text(flight.flightNumber, boxX + 50, boxY + 20);
+    text(flight.fromattedDate, boxX + 350, boxY + 20);
 
     // Display origin & departure time
     textSize(20);
     text(flight.originCity, boxX + 50, boxY + 60);
     textSize(20);
-    text(flight.formattedDepTime, boxX + 70, boxY + 85 ) ; 
-    
-    // Display destination & arrival time 
+    text(flight.formattedDepTime, boxX + 70, boxY + 85 ) ;
+
+    // Display destination & arrival time
     textSize(20);
     text(flight.destCity, boxX + 330, boxY + 60);
     textSize(20);
@@ -232,20 +232,20 @@ for (int i = 0; i < filteredFlights.size(); i++) {
 
     // Display flight status if applicable
     if (flight.cancelled == false && flight.diverted == false) {
-      fill(255); 
+      fill(255);
       textSize(18);
-      text(" on time ", centerBox , boxY + 20);
+      text(" on time ", centerBox, boxY + 20);
     } else if (flight.cancelled == true ) {
-      fill(255); 
+      fill(255);
       textSize(18);
-      text(" cancelled ", centerBox , boxY + 20);
-    } else if ( flight.cancelled == false  && flight.diverted == true ) { 
+      text(" cancelled ", centerBox, boxY + 20);
+    } else if ( flight.cancelled == false  && flight.diverted == true ) {
       fill (255);
       textSize(18);
-      text(" diverted ", centerBox , boxY + 20);
+      text(" diverted ", centerBox, boxY + 20);
     }
-    
-    
+
+
 
     y += boxHeight + 10; // Spacing between flight boxes
   }

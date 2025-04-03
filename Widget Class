@@ -4,7 +4,7 @@ class Widget {
   int event;
   color widgetColor, labelColor, mouseHoverColor, defaultColor;
   PFont widgetFont;
-  
+
   Widget(int x, int y, int width, int height, String label,
     color widgetColor, PFont widgetFont, int event) {
     this.x = x;

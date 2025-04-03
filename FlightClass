@@ -2,7 +2,7 @@ class Flight {
   String flightDate, carrier, flightNumber, origin, originCity, originAbb, dest, destCity, destAbb;
   int originWAC, destWAC, crsDepTime, depTime, crsArrTime, arrTime, distance;
   boolean cancelled, diverted;
-  String formattedDepTime, formattedArrTime, fromattedDate,formattedOrigin,formattedArrival;
+  String formattedDepTime, formattedArrTime, fromattedDate, formattedOrigin, formattedArrival;
 
   Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String originAbb,
     int originWAC, String dest, String destCity, String destAbb, int destWAC,
@@ -25,13 +25,12 @@ class Flight {
     this.cancelled = cancelled;
     this.diverted = diverted;
     this.distance = distance;
-    
-    this.formattedDepTime = formatTime(depTime); 
-    this.formattedArrTime = formatTime(arrTime); 
-    this.fromattedDate = formatDate (flightDate); 
-    this.formattedOrigin = formatOriginCity (originCity); 
-    this.formattedArrival = formatArrivalCity (destCity); 
 
+    this.formattedDepTime = formatTime(depTime);
+    this.formattedArrTime = formatTime(arrTime);
+    this.fromattedDate = formatDate (flightDate);
+    this.formattedOrigin = formatOriginCity (originCity);
+    this.formattedArrival = formatArrivalCity (destCity);
   }
 
   @Override
@@ -54,8 +53,8 @@ class Flight {
         " (Delay for: " + (arrTime - crsArrTime) + " mins), Distance: " + distance + " km" + (diverted ? ", Diverted" : "");
     }
   }
-  
-   String formatTime(int timeInt) {
+
+  String formatTime(int timeInt) {
     if (timeInt == 0) {
       return "Cancelled"; // If time is 0, it means the flight was cancelled
     }
@@ -66,28 +65,24 @@ class Flight {
     // Ensure hours and minutes are always two digits
     return String.format("%02d:%02d", hours, minutes);
   }
-  
+
   String formatDate(String date) {
-   
-      String[] parts = date.split(" ");
-      return parts[0]; 
 
+    String[] parts = date.split(" ");
+    return parts[0];
   }
-  
+
   String formatOriginCity(String originCity) {
-   
-     String[] parts = originCity.split(",\\s*");
-      return parts[0]; 
 
+    String[] parts = originCity.split(",\\s*");
+    return parts[0];
   }
-  
+
   String formatArrivalCity(String arrivalCity) {
-   
-  String[] parts = arrivalCity.split(",\\s*");
-      return parts[0]; 
 
+    String[] parts = arrivalCity.split(",\\s*");
+    return parts[0];
   }
-
 }
 
 
