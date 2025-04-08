@@ -1,6 +1,7 @@
 void drawChartTitle() {
   textAlign(CENTER);
   textSize(18);
+  textFont(flightInfoFont);
   text("Number of Flights per Day", width / 2, margin / 2);
 }
 
@@ -20,9 +21,9 @@ void drawBarChartForMonthlyFlights() {
 
     // Highlight if this is the selected bar
     if (i == selectedDay) {
-      fill(255, 100, 0);  // Orange for selected
+      fill(255, 190, 40, 160);  // Orange for selected
     } else {
-      fill(0, 100, 255);  // Blue for others
+      fill(150, 150, 150, 220);  // Grey for others
     }
 
     rect(margin + i * barWidth, height - margin - barHeight, barWidth, barHeight);
