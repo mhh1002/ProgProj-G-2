@@ -19,17 +19,21 @@ void drawBarChart() {
   line(margin, margin, margin, height - margin);
   line(margin, height - margin, width - margin, height - margin);
 
-  fill(100, 150, 90);
+  fill(255, 180, 100, 210);  // color
+  stroke(220, 80, 0, 240);   // stroke
   notCancelledHeight = map(notCancelledCount, 0, maxCount, 0, chartHeight);
   rect(margin, height - margin - notCancelledHeight, barWidth, notCancelledHeight);
 
-  fill(200, 79, 130);
+  fill(50, 160, 255, 210);  // color
+  stroke(0, 80, 220, 240);   // stroke
   cancelledHeight = map(cancelledCount, 0, maxCount, 0, chartHeight);
   rect(margin + barWidth + 20, height - margin - cancelledHeight, barWidth, cancelledHeight);
 
-  fill(0);
+  fill(255, 245, 220);
   textAlign(CENTER);
-  textSize(14);
+  textFont(flightInfoFont);
+  stroke(255);
+  textSize(15.1);
   text("Delayed/Cancelled", margin + barWidth / 2, height - margin + 30);
   text("Cancelled", margin + barWidth + 20 + barWidth / 2, height - margin + 30);
   text("Total: " + notCancelledCount, margin + barWidth / 2, height - margin - notCancelledHeight - 10);
