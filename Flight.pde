@@ -45,12 +45,12 @@ class Flight {
 
   String getDisplayString() {
     if (cancelled) {
-      return "Cancellation: " + flightNumber + " from " + origin + " to " + dest + ", Scheduled at: " +
-        crsDepTime + " - " + crsArrTime + ", Distance: " + distance + " km";
+      return "Cancellation: " + flightDate + ", " + flightNumber + " " + origin + " to " + dest + ", Scheduled at: " +
+        crsDepTime + " - " + crsArrTime + ", Distance: " + distance + "km";
     } else {
-      return "Delay or Diverted: " + flightNumber + " from " + origin + " to " + dest + ", Departed at: " + depTime +
+      return "Delay/Diverted: " + flightDate + ", " + flightNumber + " " + origin + " to " + dest + ", Departed at: " + depTime +
         " (Delay for: " + (depTime - crsDepTime) + " mins), Arrived at: " + arrTime +
-        " (Delay for: " + (arrTime - crsArrTime) + " mins), Distance: " + distance + " km" + (diverted ? ", Diverted" : "");
+        " (Delay for: " + (arrTime - crsArrTime) + " mins), Distance: " + distance + "km" + (diverted ? ", Diverted" : "");
     }
   }
 
@@ -127,7 +127,8 @@ void readData(String file) {
     }
 
     if (flightDay == day) {
-      flightInfo = String.join(",", flightDate, flightNumber, origin, dest);
+      String d = distance + "km";
+      flightInfo = String.join(", ", flightDate, flightNumber, origin, dest, d);
       flightData.add(flightInfo);
     }
 
