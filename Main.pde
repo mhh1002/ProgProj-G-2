@@ -4,14 +4,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-//import com.opencsv.CSVReader;
-//import com.opencsv.exceptions.CsvException;
-//import java.io.FileReader;
-//import java.io.IOException;
-//import java.util.List;
-//import java.util.HashMap;
-
-
 PFont stdFont;
 PFont labelFont;
 PFont flightInfoFont;
@@ -155,7 +147,7 @@ void displayFlights() {
 
   fill(40, 30, 50, 260);
   textFont(flightInfoFont);
-  textSize(14.8);
+  textSize(14.8); // Remodify text size
 
   int y = initial_y - currentScreen.scrollY; // intial y position
 
@@ -214,7 +206,7 @@ void displayFilteredFlights() {
   textSize(14.8);
   textAlign(LEFT, 60);
 
-  int centerX = (width - 550) / 2;
+  int centerX = (width - 550) / 2 - 8;
   int centerBox = centerX + 225;
   int y = initial_y2 - currentScreen.scrollY;
 
@@ -225,7 +217,7 @@ void displayFilteredFlights() {
 
     int boxX = centerX;
     int boxY = y;
-    int boxWidth = 550;
+    int boxWidth = 630;
     int boxHeight = 100;
 
     // Only Draw flights within the size of Screen
@@ -254,17 +246,17 @@ void displayFilteredFlights() {
     text(flight.fromattedDate, boxX + 350, boxY + 20);
 
     textSize(20);
-    text(flight.originCity, boxX + 50, boxY + 60);
-    text(flight.formattedDepTime, boxX + 70, boxY + 85);
+    text(flight.originCity, boxX + 35, boxY + 60);
+    text(flight.formattedDepTime, boxX + 60, boxY + 85);
 
-    text(flight.destCity, boxX + 330, boxY + 60);
-    text(flight.formattedArrTime, boxX +  350, boxY + 85);
+    text(flight.destCity, boxX + 320, boxY + 60);
+    text(flight.formattedArrTime, boxX + 350, boxY + 85);
 
     // Icon and Logo
-    image(planeIcon, centerBox + 20, boxY + 30, 30, 30);
+    image(planeIcon, centerBox + 20, boxY + 38, 30, 30);
 
     textSize(18);
-    text(flight.distance + " km", centerBox, boxY + 75);
+    text(flight.distance + " km", centerBox, boxY + 83);
 
     // status
     fill(255);
