@@ -6,11 +6,11 @@ void mouseWheel(MouseEvent event) {
     int maxScroll = 0;
 
     if (currentScreen == canDelFlights) {
-      maxScroll = max(0, flightsForDate.size() * rowHeight - (height - 60));
+      maxScroll = max(0, flightsForDate.size() * rowHeight - (height - 70));
     } else if (currentScreen == originCityScr || currentScreen == arrivalCityScr) {
       maxScroll = max(0, filteredFlights.size() * 20 - (height - 210));
     } else if (currentScreen == dailyFlightsInfo) {
-      maxScroll = max(0, flightData.size() * rowHeight - (height - 280));
+      maxScroll = max(0, flightData.size() * rowHeight - (height - 100));
     }
 
     currentScreen.scrollY = constrain(currentScreen.scrollY, 0, maxScroll);
