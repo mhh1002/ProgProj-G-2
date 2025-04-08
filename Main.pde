@@ -27,10 +27,10 @@ final int SORT_TYPE_DATE = 0;
 final int SORT_TYPE_CITY = 1;
 
 final int initial_y2 = 220;
-final int initial_y = 120;
+final int initial_y = 135;
 final int initial_x = 55;
 int scrollOffset = 0;
-int rowHeight = 20;
+int rowHeight = 33;
 int selectedBarIndex = -1;
 int cancelledCount = 0; // Count for cancelled (1)
 int notCancelledCount = 0; // Count for not cancelled (0)
@@ -140,21 +140,26 @@ void draw() {
 
 void displayFlights() {
   // Flight list container (unchanged)
-  fill(253, 211, 219, 140);
+  fill(253, 211, 219, 155);
   stroke(255, 87, 51, 90);
+  rect(50, 100, width - 130, height - 150, 17);
 
-  rect(50, 100, width - 230, height - 150, 10);
+  fill(0);
+  textFont(flightInfoFont);
+  textSize(20);
+  String headers = "Date, Time, Flight Number, Origin, Destination, Real-Time dep/arr time and Distance are as followed:";
+  text(headers, 55, 81.3);
 
   fill(40, 30, 50, 260);
   textFont(flightInfoFont);
-  textSize(14.8); // Remodify text size
+  textSize(16); // Remodify text size
 
   int y = initial_y - currentScreen.scrollY; // intial y position
 
   for (int i = 0; i < flightsForDate.size(); i++) {
     Flight dp = flightsForDate.get(i);
 
-    if (y > 115 && y < height - 48) {
+    if (y > 125 && y < height - 48) {
       String flightInfo = dp.getDisplayString();
       textAlign(LEFT);
       text(flightInfo, initial_x, y); // Display flight details
