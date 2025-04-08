@@ -1,0 +1,43 @@
+void searchFlights() {
+  filteredFlights.clear();
+  inputError = false;
+
+  if (!validateInput()) {
+    inputError = true;
+    return;
+  }
+
+  // Iterate over the flights to find matching ones based on the search criteria
+  for (Flight f : flights) {
+    if (searchByOrigin) {
+      if ( f.formattedOrigin.equalsIgnoreCase(searchQuery.trim())) {
+        filteredFlights.add(f);
+      }
+    } else if (searchByArrival) {
+      if ( f.formattedArrival.equalsIgnoreCase(searchQuery.trim())) {
+        filteredFlights.add(f);
+      }
+    }
+  }
+}
+
+
+boolean validateInput() {
+  boolean found = false;
+
+  for (Flight f : flights) {
+    String searchQueryTrimmed = searchQuery.trim().toLowerCase();
+
+    if (searchByOrigin) {
+      if ( f.formattedOrigin.toLowerCase().equalsIgnoreCase(searchQueryTrimmed)) {
+        found = true;
+      }
+    } else if (searchByArrival) {
+      if ( f.formattedArrival.toLowerCase().equalsIgnoreCase(searchQueryTrimmed)) {
+        found = true;
+      }
+    }
+  }
+
+  return found;
+}

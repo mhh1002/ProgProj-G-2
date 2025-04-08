@@ -1,0 +1,52 @@
+void drawChartTitle() {
+  textAlign(CENTER);
+  textSize(18);
+  text("Number of Flights per Day", width / 2, margin / 2);
+}
+
+void drawBarChartForMonthlyFlights() {
+  int barWidth = (width - 2 * margin) / 31;
+  int chartHeight = height - 2 * margin - 50;
+
+  stroke(0);
+  line(margin, margin + 50, margin, height - margin);
+  line(margin, height - margin, width - margin, height - margin);
+
+  int maxFlights = max(flightsPerDay);
+  if (maxFlights == 0) maxFlights = 1;
+
+  for (int i = 0; i < 31; i++) {
+    float barHeight = map(flightsPerDay[i], 0, maxFlights, 0, chartHeight);
+
+    // Highlight if this is the selected bar
+    if (i == selectedDay) {
+      fill(255, 100, 0);  // Orange for selected
+    } else {
+      fill(0, 100, 255);  // Blue for others
+    }
+
+    rect(margin + i * barWidth, height - margin - barHeight, barWidth, barHeight);
+    fill(0);
+    textAlign(CENTER);
+    text(i + 1, margin + i * barWidth + barWidth / 2, height - margin + 20);
+  }
+}
+
+void onBarClickForDaily(int day) {
+  selectedDay = day - 1;  // Convert to 0-based index
+  dailyFlights.clear();
+
+  // Filter flights for this day from your existing collection
+  for (Flight f : flightsForDate) {  // Or filteredFlights if that's your main collection
+    String[] dateParts = split(f.flightDate, '/');
+    if (dateParts.length >= 2) {  // Safety check
+      int flightDay = int(dateParts[1]);
+      if (flightDay == day) {
+        dailyFlights.add(f);
+      }
+    }
+  }
+
+  currentScreen = dailyFlightsInfo;
+  scrollOffset = 0;
+}

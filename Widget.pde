@@ -1,0 +1,56 @@
+class Widget {
+  int x, y, width, height;
+  String label;
+  int event;
+  color widgetColor, labelColor, mouseHoverColor, defaultColor;
+  PFont widgetFont;
+
+  Widget(int x, int y, int width, int height, String label,
+    color widgetColor, PFont widgetFont, int event) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.label = label;
+    this.event = event;
+    this.widgetColor = widgetColor;
+    this.defaultColor = widgetColor;
+    this.widgetFont = widgetFont;
+    labelColor = color (0);
+  }
+
+
+  void draw() {
+    pushStyle();
+    stroke(0, 10, 97);
+    fill(widgetColor);
+    rect(x, y, width, height);
+
+    fill(255);
+    textFont(widgetFont);
+    textSize(19);
+    textAlign(LEFT, BASELINE);
+    float textHeight = textAscent() + textDescent();
+    float textY = y + height / 2 + textHeight / 2 - textDescent();
+    text(label, x + GAP, textY);
+
+    popStyle();
+  }
+
+
+  void changeColor(int mX, int mY, color mouseHoverColor) {
+    this.mouseHoverColor = mouseHoverColor;
+    if (mX > x && mX < x + width && mY > y && mY < y + height)
+      widgetColor = mouseHoverColor;
+    else
+      widgetColor = defaultColor;
+  }
+
+  int getEvent(int mX, int mY) {
+    if (mX > x && mX < x + width && mY > y && mY < y + height) {
+      return event;
+    }
+
+    return EVENT_NULL;
+  }
+}

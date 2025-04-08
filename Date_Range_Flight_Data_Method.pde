@@ -1,0 +1,47 @@
+void drawFlightInfoScreen() {
+  // Flight list container (unchanged)
+  fill(253, 211, 219, 140);
+  stroke(255, 87, 51, 90);
+
+  rect(50, 100, width - 230, height - 150, 10);
+
+  // Calculate scroll parameters
+  int itemsPerPage = floor((height - 280) / rowHeight); // 280 = top+bottom margins
+  int maxScroll = max(0, flightData.size() * rowHeight - (height - 280));
+  currentScreen.scrollY = constrain(currentScreen.scrollY, 0, maxScroll);
+
+  // Flight details (unchanged)
+  fill(40, 30, 50, 260);
+  textSize(12);
+  textAlign(LEFT);
+
+  // Column headers (unchanged, always visible)
+  fill(0);
+  textSize(14);
+  String headers = "Date/Time,Airline,Flight#,Origin,City,State,Dest,City,State,Dep,Arr,DepDelay,ArrDelay,Cancelled,Diverted,Distance";
+  text(headers, 70, 130);
+
+  // Flight data with scroll
+  textSize(16);
+  int startIndex = floor(currentScreen.scrollY / rowHeight);
+  int yPos = 190; // Start below headers
+
+  for (int i = startIndex; i < min(startIndex + itemsPerPage, flightData.size()); i++) {
+    String flight = flightData.get(i);
+    float drawY = yPos + (i - startIndex) * rowHeight - (currentScreen.scrollY % rowHeight);
+
+    if (flight.startsWith("Error") || flight.startsWith("No flights")) {
+      text(flight, 70, drawY);
+    } else {
+      text(flight, 70, drawY);
+    }
+  }
+
+  // Optional scrollbar (can remove if not needed)
+  if (maxScroll > 0) {
+    float scrollbarHeight = (height - 150) * ((height - 280) / (float)(flightData.size() * rowHeight));
+    float scrollbarY = map(currentScreen.scrollY, 0, maxScroll, 100, height - 50 - scrollbarHeight);
+    fill(150);
+    rect(width - 110, scrollbarY, 8, scrollbarHeight);
+  }
+}
