@@ -19,13 +19,13 @@ void drawBarChart() {
   line(margin, margin, margin, height - margin);
   line(margin, height - margin, width - margin, height - margin);
 
-  fill(255, 180, 100, 210);  // color
-  stroke(220, 80, 0, 240);   // stroke
+  fill(204, 204, 255, 130);  // color
+  stroke(204, 204, 255, 250);   // stroke
   notCancelledHeight = map(notCancelledCount, 0, maxCount, 0, chartHeight);
   rect(margin, height - margin - notCancelledHeight, barWidth, notCancelledHeight);
 
-  fill(50, 160, 255, 210);  // color
-  stroke(0, 80, 220, 240);   // stroke
+  fill(50, 160, 255, 130);  // color
+  stroke(0, 80, 220, 250);   // stroke
   cancelledHeight = map(cancelledCount, 0, maxCount, 0, chartHeight);
   rect(margin + barWidth + 20, height - margin - cancelledHeight, barWidth, cancelledHeight);
 
