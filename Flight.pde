@@ -4,6 +4,7 @@ class Flight {
   boolean cancelled, diverted;
   String formattedDepTime, formattedArrTime, fromattedDate, formattedOrigin, formattedArrival;
 
+  // Constructor
   Flight(String flightDate, String carrier, String flightNumber, String origin, String originCity, String originAbb,
     int originWAC, String dest, String destCity, String destAbb, int destWAC,
     int crsDepTime, int depTime, int crsArrTime, int arrTime, boolean cancelled, boolean diverted, int distance) {
@@ -43,6 +44,7 @@ class Flight {
       " | " + (diverted ? "DIVERTED" : "Normal");
   }
 
+  // Formatted display for UI
   String getDisplayString() {
     if (cancelled) {
       return "Cancellation: " + flightDate + ", " + flightNumber + " " + origin + " to " + dest + ", Scheduled at: " +
@@ -54,9 +56,10 @@ class Flight {
     }
   }
 
+  // Helper methods for formatting
   String formatTime(int timeInt) {
     if (timeInt == 0) {
-      return "Cancelled"; // If time is 0, it means the flight was cancelled
+      return "Cancelled"; // If time == 0, it means the flight was cancelled
     }
 
     int hours = timeInt / 100; // Integer division to get hours
@@ -69,19 +72,19 @@ class Flight {
   String formatDate(String date) {
 
     String[] parts = date.split(" ");
-    return parts[0];
+    return parts[0];  // Extract date part only
   }
 
   String formatOriginCity(String originCity) {
 
     String[] parts = originCity.split(",\\s*");
-    return parts[0];
+    return parts[0]; // Get city name before comma
   }
 
   String formatArrivalCity(String arrivalCity) {
 
     String[] parts = arrivalCity.split(",\\s*");
-    return parts[0];
+    return parts[0]; // Get city name before comma
   }
 }
 
@@ -113,6 +116,7 @@ void readData(String file) {
     boolean diverted = row.getInt("DIVERTED") == 1?true:false;
     int distance = row.getInt("DISTANCE");
 
+    // Track flights per day for statistics
     try {
       String[] dateParts = split(flightDate, ' ')[0].split("/");
       day = int(dateParts[1]);
