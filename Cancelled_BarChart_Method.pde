@@ -41,7 +41,7 @@ void drawBarChart() {
   textSize(15.1);
 
   // Bar labels below x-axis
-  text("Delayed/Cancelled", margin + barWidth / 2, height - margin + 30);
+  text("Delayed/Diverted", margin + barWidth / 2, height - margin + 30);
   text("Cancelled", margin + barWidth + 20 + barWidth / 2, height - margin + 30);
 
   // Value labels above bars
