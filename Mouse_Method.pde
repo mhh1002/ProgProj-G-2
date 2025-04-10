@@ -1,10 +1,11 @@
+// Handles mouse wheel scrolling for different screens
 void mouseWheel(MouseEvent event) {
   if (!mainScreenOn && currentScreen != null) {
-    float scrollSensitivity = 0.4; // Adjust this value as needed
+    float scrollSensitivity = 0.4; // Controls scroll speed
     currentScreen.scrollY += event.getCount() * rowHeight * scrollSensitivity;
 
+    // Calculate max scroll position based on current screen type
     int maxScroll = 0;
-
     if (currentScreen == canDelFlights) {
       maxScroll = max(0, flightsForDate.size() * rowHeight - (height - 70));
     } else if (currentScreen == originCityScr || currentScreen == arrivalCityScr) {
@@ -17,35 +18,36 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
-
+// Main mouse click handler for all UI interactions
 void mousePressed() {
+  // Handle sorting buttons if not on main screen
   if (currentScreen != null && !mainScreenOn) {
-    // Handle sorting
     int sortEvent = currentScreen.getSortEvent(mouseX, mouseY);
     switch(sortEvent) {
     case SORT_ASC:
-      sortFlights(true, false);
+      sortFlights(true, false);  // Sort by date ascending
       currentSortType = SORT_TYPE_DATE;
       sortAscending = true;
       break;
     case SORT_DESC:
-      sortFlights(false, false);
+      sortFlights(false, false); // Sort by date descending
       currentSortType = SORT_TYPE_DATE;
       sortAscending = false;
       break;
     case SORT_AZ:
-      sortFlights(true, true);
+      sortFlights(true, true);   // Sort city A-Z
       currentSortType = SORT_TYPE_CITY;
       currentSortAZ = true;
       break;
     case SORT_ZA:
-      sortFlights(false, true);
+      sortFlights(false, true);  // Sort city Z-A
       currentSortType = SORT_TYPE_CITY;
       currentSortAZ = false;
       break;
     }
   }
 
+  // Determine which UI element was clicked
   int event = -1;
   if (mainScreenOn) {
     event = myMainScreen.getEvent(mouseX, mouseY);
@@ -54,7 +56,7 @@ void mousePressed() {
       event = currentScreen.backButton.getEvent(mouseX, mouseY);
     }
 
-    // Handle bar chart clicks when on canDelLatScr screen
+    // Handle clicks on cancellation/delay bars
     if (currentScreen == canDelLatScr) {
       int margin = 100;
       int barWidth = (width - 2 * margin) / 2;
@@ -76,13 +78,14 @@ void mousePressed() {
       }
     }
 
+    // Handle clicks on daily flight bars
     if (currentScreen == monthlyFlightScr) {
       int barWidth = (width - 2 * margin) / 31;
       int clickedBar = (mouseX - margin) / barWidth;
 
       if (clickedBar >= 0 && clickedBar < 31 &&
         mouseY >= margin + 50 && mouseY <= height - margin) {
-        onBarClickForDaily(clickedBar + 1);  // +1 to convert to 1-31 day format
+        onBarClickForDaily(clickedBar + 1);  // Convert to 1-31 day format
         return;
       }
     }
@@ -95,6 +98,7 @@ void mousePressed() {
     return;
   }
 
+  // Handle screen navigation based on clicked element
   switch(event) {
   case BACK:
     resetSearch();
@@ -108,13 +112,12 @@ void mousePressed() {
       mainScreenOn = true;
       currentScreen = null;
     }
-
     break;
 
   case DATE_RANGE:
     resetSearch();
     mainScreenOn = false;
-    currentScreen = monthlyFlightScr; // This is where we set the screen for monthly chart
+    currentScreen = monthlyFlightScr; // Monthly flights chart screen
     currentScreen.scrollY = 0;
     break;
 
@@ -163,6 +166,7 @@ void mousePressed() {
   }
 }
 
+// Sorts flights by date or city name
 void sortFlights(boolean ascending, boolean isCitySort) {
   Collections.sort(filteredFlights, new Comparator<Flight>() {
     public int compare(Flight f1, Flight f2) {
@@ -172,13 +176,11 @@ void sortFlights(boolean ascending, boolean isCitySort) {
           str1 = f1.destCity.toLowerCase();
           str2 = f2.destCity.toLowerCase();
         } else {
-          //
           str1 = f1.originCity.toLowerCase();
           str2 = f2.originCity.toLowerCase();
         }
         return ascending ? str1.compareTo(str2) : str2.compareTo(str1);
       } else {
-        //
         Date date1 = parseDate(f1.flightDate);
         Date date2 = parseDate(f2.flightDate);
         return ascending ? date1.compareTo(date2) : date2.compareTo(date1);
@@ -188,16 +190,17 @@ void sortFlights(boolean ascending, boolean isCitySort) {
   );
 }
 
+// Converts date string to Date object
 Date parseDate(String dateStr) {
   try {
     String[] parts = split(dateStr, ' ');
     String[] mdy = split(parts[0], '/');
-    int month = int(mdy[0])-1; //
+    int month = int(mdy[0])-1; // Months are 0-based in Date
     int day = int(mdy[1]);
     int year = int(mdy[2]);
-    return new Date(year-1900, month, day);
+    return new Date(year-1900, month, day); // Date counts years from 1900
   }
   catch(Exception e) {
-    return new Date(0); //
+    return new Date(0); // Return epoch date on error
   }
 }
