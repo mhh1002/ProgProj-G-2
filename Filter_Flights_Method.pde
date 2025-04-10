@@ -1,43 +1,34 @@
+// Searches flights by origin or destination city
 void searchFlights() {
   filteredFlights.clear();
   inputError = false;
 
   if (!validateInput()) {
-    inputError = true;
+    inputError = true;  // Show error if no matching cities found
     return;
   }
 
-  // Iterate over the flights to find matching ones based on the search criteria
+  // Find all matching flights (case-insensitive)
   for (Flight f : flights) {
-    if (searchByOrigin) {
-      if ( f.formattedOrigin.equalsIgnoreCase(searchQuery.trim())) {
-        filteredFlights.add(f);
-      }
-    } else if (searchByArrival) {
-      if ( f.formattedArrival.equalsIgnoreCase(searchQuery.trim())) {
-        filteredFlights.add(f);
-      }
+    if (searchByOrigin && f.formattedOrigin.equalsIgnoreCase(searchQuery.trim())) {
+      filteredFlights.add(f);
+    } else if (searchByArrival && f.formattedArrival.equalsIgnoreCase(searchQuery.trim())) {
+      filteredFlights.add(f);
     }
   }
 }
 
-
+// Validates if search query matches any city in database
 boolean validateInput() {
-  boolean found = false;
+  String searchQueryTrimmed = searchQuery.trim().toLowerCase();
 
   for (Flight f : flights) {
-    String searchQueryTrimmed = searchQuery.trim().toLowerCase();
-
-    if (searchByOrigin) {
-      if ( f.formattedOrigin.toLowerCase().equalsIgnoreCase(searchQueryTrimmed)) {
-        found = true;
-      }
-    } else if (searchByArrival) {
-      if ( f.formattedArrival.toLowerCase().equalsIgnoreCase(searchQueryTrimmed)) {
-        found = true;
-      }
+    if (searchByOrigin && f.formattedOrigin.toLowerCase().equals(searchQueryTrimmed)) {
+      return true;
+    }
+    if (searchByArrival && f.formattedArrival.toLowerCase().equals(searchQueryTrimmed)) {
+      return true;
     }
   }
-
-  return found;
+  return false;  // No matching city found
 }
